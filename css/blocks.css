@@ -1,0 +1,65 @@
+/* scratch-blocks dressed as the SPIKE app: category column, palette, pickers and the in-page dialog. */
+.blocklyText, .blocklyHtmlInput, .blocklyFlyoutLabelText, .scratchNotePickerKeyLabel,
+.blocklyDropDownDiv .goog-menuitem, .blocklyWidgetDiv .goog-menuitem {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.blocklyText { font-weight: 500; }
+.blocklyMainBackground { stroke: none; }
+
+/* SPIKE keeps white text readable on its bright blocks with a dark edge. Child selectors on purpose:
+   the next block in a stack is nested inside this block's group and must not inherit the edge. */
+:is([data-category="events"], [data-category="control"], [data-category="sensing"]) > .blocklyText,
+:is([data-category="events"], [data-category="control"], [data-category="sensing"]) > g > .blocklyDropdownText,
+:is([data-category="events"], [data-category="control"], [data-category="sensing"]) > [data-argument-type] > g > .blocklyDropdownText {
+  paint-order: stroke;
+  stroke: rgba(45, 45, 40, 0.65);
+  stroke-width: 2.4px;
+  stroke-linejoin: round;
+}
+.raSwatch > .blocklyPath { stroke: #fff; stroke-width: 1.5px; }
+
+/* Category column. */
+.blocklyToolboxDiv { width: 64px; }
+.scratchCategoryMenu { width: 64px; padding: 4px 0; color: #4a4a4a; font: 500 9px/1.15 "Helvetica Neue", Helvetica, Arial, sans-serif; }
+.scratchCategoryMenuItem { margin: 0 2px 2px; padding: 8px 0 7px; border-radius: 14px; }
+.scratchCategoryMenuItem:hover { color: #000 !important; background: #f7f7f7; }
+.scratchCategoryMenuItem.categorySelected { background: #f2f2f2; }
+.scratchCategoryMenuItem:focus-visible { outline: 3px solid var(--azure, #00adc4); outline-offset: -2px; border-radius: 14px; }
+.scratchCategoryItemBubble { width: 20px; height: 20px; border: 0; margin: 0 auto 5px; }
+.categorySelected .scratchCategoryItemBubble { opacity: 0.65; }
+.scratchCategoryMenuItemLabel { text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scratchCategoryId-moremotor .scratchCategoryMenuItemLabel { white-space: normal; }
+
+/* handdelete.cur does not ship with the package. */
+.blocklyDragging.blocklyDraggingDelete, .blocklyToolboxDelete { cursor: not-allowed; }
+
+/* Palette. */
+.blocklyFlyoutBackground { fill-opacity: 1; }
+.blocklyFlyout { border-right: 1px solid #ececec; box-sizing: border-box; }
+.blocklyFlyoutLabelText { font-size: 22px; font-weight: 700; fill: #6f6f6f; }
+.blocklyFlyoutButtonBackground { stroke: #d0d0d0; stroke-width: 1.5px; fill: #fff; }
+.blocklyFlyoutButton:hover .blocklyFlyoutButtonBackground { fill: #f2f2f2; }
+.blocklyFlyoutButton .blocklyText { fill: #4a4a4a; font-size: 13pt; }
+
+/* Open menus: dark, white text, like the block they belong to. */
+.blocklyDropDownContent { max-height: 350px; }
+.blocklyDropDownDiv { border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); }
+.blocklyDropDownDiv .goog-menuitem { font-size: 15px; font-weight: 500; padding: 6px 20px 6px 32px; min-height: 0; border-radius: 4px; }
+.blocklyDropDownDiv .goog-menuitem img { display: block; }
+/* The vendor stylesheet wants a sprites.png that does not ship with the package. */
+.blocklyDropDownDiv .goog-option-selected .goog-menuitem-checkbox,
+.blocklyDropDownDiv .goog-option-selected .goog-menuitem-icon {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5 6.5 12 13 4.5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center !important;
+}
+
+/* Notes sit right above their stack, the leader line would only cross the block text. */
+.blocklyBubbleCanvas > g > line { display: none; }
+
+/* In-page dialog for names and confirmations. */
+.raDialog { width: min(420px, calc(100% - 32px)); padding: 24px; border: 2px solid var(--ink); border-radius: 16px; color: var(--ink); background: var(--paper); }
+.raDialog::backdrop { background: rgba(16, 32, 42, 0.45); }
+.raDialog h3 { font-size: 20px; margin-bottom: 12px; }
+.raDialog label { display: block; font-size: 17px; line-height: 1.4; }
+.raDialog input { display: block; width: 100%; margin-top: 10px; padding: 10px 12px; font: 500 18px var(--font-body); color: var(--ink); border: 2px solid var(--line); border-radius: 10px; }
+.raDialog input:focus { outline: none; border-color: var(--azure); }
+.raDialog__row { display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; }

@@ -1,0 +1,49 @@
+/* Start view: giant letters stand at the back of a table, the model sits in front of them. The kicker sits above the letters. */
+.hero {
+  --title: min(12.6vw, 22vh);
+  --kick: clamp(30px, 5.2vh, 48px);
+  --horizon: calc(var(--kick) + var(--title) * 0.9);
+  position: relative; overflow: hidden;
+  height: calc(100vh - var(--topbar-h));
+  height: calc(100dvh - var(--topbar-h));
+  min-height: 460px;
+  background: linear-gradient(var(--yellow) var(--horizon), #e3bd00 var(--horizon), var(--paper) calc(var(--horizon) + 3px), var(--mist));
+}
+.hero__title {
+  position: absolute; left: 0; right: 0; top: calc(var(--horizon) - var(--title) * 0.86);
+  font: 900 var(--title)/0.86 var(--font-display);
+  text-align: center; text-transform: uppercase; white-space: nowrap;
+  letter-spacing: -0.02em; color: var(--ink);
+  animation: hero-rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.hero__kicker {
+  position: absolute; left: 0; right: 0; top: calc(var(--kick) * 0.3); margin: 0;
+  font: 700 calc(var(--kick) * 0.42)/1 var(--font-display);
+  text-align: center; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink);
+  animation: hero-fade 0.7s 0.3s both;
+}
+.hero__stage { position: absolute; inset: 0; cursor: grab; }
+.hero__stage:active { cursor: grabbing; }
+.hero__stage .no-webgl { bottom: 130px; }
+.hero__foot {
+  position: absolute; left: var(--gutter-l); right: var(--gutter-r); bottom: 20px;
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+  pointer-events: none;
+  animation: hero-fade 0.7s 0.5s both;
+}
+.hero__specs { display: flex; gap: 32px; margin: -6px -12px; padding: 6px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.85); }
+.hero__specs dt { font-size: 14px; font-weight: 600; color: var(--ink-2); white-space: nowrap; }
+.hero__specs dd { margin: 0; font: 700 30px/1.2 var(--font-mono); word-spacing: -0.3em; white-space: nowrap; }
+.hero__go { pointer-events: auto; min-height: 56px; padding: 0 32px; font-size: 19px; }
+
+/* The letters rise from behind the table edge: the clip cancels the slide at the bottom. */
+@keyframes hero-rise { from { transform: translateY(100%); clip-path: inset(-10% 0 100% 0); } to { transform: none; clip-path: inset(-10% 0 -10% 0); } }
+@keyframes hero-fade { from { opacity: 0; } to { opacity: 1; } }
+
+@media (max-width: 640px) {
+  .hero__stage .no-webgl { bottom: 170px; }
+  .hero__foot { flex-direction: column; align-items: stretch; }
+  .hero__specs { justify-content: space-between; gap: 8px; }
+  .hero__specs dt { font-size: 12px; }
+  .hero__specs dd { font-size: 22px; }
+}

@@ -1,0 +1,335 @@
+<div class="les">
+
+<svg class="les-defs" aria-hidden="true">
+  <symbol id="les-ico-force" viewBox="0 0 48 48"><path d="M9 18H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4M39 18h4a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-4" fill="#fff" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="10" width="30" height="28" rx="5" fill="#fff" stroke="currentColor" stroke-width="1.5"/><circle cx="24" cy="24" r="9" fill="currentColor"/><path d="M24 19.5v9M19.5 24h9" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  <symbol id="les-ico-motor" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#fff" stroke="currentColor" stroke-width="1.5"/><circle cx="24" cy="12" r="5.7" fill="currentColor"/><circle cx="24" cy="36" r="5.7" fill="currentColor"/><circle cx="12" cy="24" r="5.7" fill="currentColor"/><circle cx="36" cy="24" r="5.7" fill="currentColor"/><path d="M24 20v8M20 24h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="les-ico-play" viewBox="0 0 48 48"><path d="M17 13 35 24 17 35z" fill="#fff" stroke="#fff" stroke-width="3.5" stroke-linejoin="round"/></symbol>
+  <!-- Last week's Роборука from the side: hub, frame, motor, two fingers with tyres. -->
+  <symbol id="les-pic-arm" viewBox="0 0 230 92">
+    <rect x="6" y="22" width="66" height="48" rx="5" fill="#eceded" stroke="#10202a" stroke-width="2"/>
+    <rect x="6" y="22" width="66" height="9" rx="4" fill="#fed920"/>
+    <circle cx="20" cy="50" r="5" fill="#fff" stroke="#c92e85" stroke-width="3"/>
+    <circle cx="60" cy="52" r="7" fill="#fff" stroke="#10202a" stroke-width="2"/>
+    <rect x="79" y="25" width="60" height="42" rx="5" fill="none" stroke="#c92e85" stroke-width="9"/>
+    <rect x="143" y="33" width="20" height="26" rx="3" fill="#01adc4"/>
+    <rect x="161" y="35" width="13" height="22" rx="3" fill="#eceded" stroke="#10202a" stroke-width="2"/>
+    <path d="M172 40l26-26M172 52l26 26" stroke="#16151a" stroke-width="7" fill="none"/>
+    <circle cx="207" cy="14" r="10" fill="#16151a"/>
+    <circle cx="207" cy="78" r="10" fill="#16151a"/>
+  </symbol>
+  <!-- Today's model from the side: hub, stand with the Force Sensor and its wheel, grabber 2 in front. -->
+  <symbol id="les-pic-tool" viewBox="0 0 360 200">
+    <path d="M60 40C46 70 60 104 52 122M118 120c12-10 20-12 26-12" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+    <path d="M60 40C46 70 60 104 52 122M118 120c12-10 20-12 26-12" fill="none" stroke="#a9b0b5" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round"/>
+    <rect x="20" y="120" width="112" height="70" rx="8" fill="#fed920"/>
+    <rect x="25" y="125" width="102" height="60" rx="5" fill="#eceded"/>
+    <circle cx="40" cy="155" r="8" fill="#fff" stroke="#10202a" stroke-width="2"/>
+    <path d="M66 140h1M76 140h1M86 140h1M96 140h1M106 140h1M66 150h1M76 150h1M86 150h1M96 150h1M106 150h1M66 160h1M76 160h1M86 160h1M96 160h1M106 160h1M66 170h1M76 170h1M86 170h1M96 170h1M106 170h1" stroke="#a9b0b5" stroke-width="6" stroke-linecap="round"/>
+    <rect x="8" y="22" width="11" height="168" rx="3" fill="#16151a"/>
+    <rect x="24" y="52" width="10" height="68" rx="3" fill="#01adc4"/>
+    <rect x="6" y="80" width="32" height="12" rx="3" fill="#c92e85"/>
+    <rect x="28" y="12" width="12" height="40" rx="3" fill="#16151a"/>
+    <rect x="38" y="12" width="40" height="40" rx="5" fill="#eceded" stroke="#10202a" stroke-width="2"/>
+    <rect x="78" y="28" width="16" height="8" fill="#16151a"/>
+    <rect x="92" y="14" width="14" height="36" rx="4" fill="#16151a"/>
+    <path d="M95 18v28M99 18v28M103 18v28" stroke="#47586a" stroke-width="1.5"/>
+    <rect x="108" y="98" width="62" height="24" rx="4" fill="#01adc4"/>
+    <rect x="168" y="96" width="28" height="28" rx="4" fill="#eceded" stroke="#10202a" stroke-width="2"/>
+    <rect x="196" y="100" width="22" height="20" rx="3" fill="#c92e85"/>
+    <path d="M214 104h56l18-12h40l10 10-10 6h-36l-16 12h-62z" fill="#16151a"/>
+    <path d="M214 116h60l14 10h44l8 8-8 6h-48l-14-10h-56z" fill="#16151a" opacity="0.72"/>
+    <circle cx="244" cy="112" r="4" fill="#fed920"/>
+  </symbol>
+</svg>
+
+<header class="les-head">
+  <div>
+    <p class="les-head__kicker">Урок: робот-рука, модель 2. Усовершенствование конструкции</p>
+    <h1>Манипуляторы и автономия</h1>
+  </div>
+  <div class="les-head__mid">
+    <p class="les-head__goal"><b>Цель</b> Сборка робот-руки 2. Использование датчика касания и силы, программирование по нажатию.</p>
+    <dl class="les-head__facts">
+      <div><dt>Время</dt><dd>1 час</dd></div>
+      <div><dt>Вид работы</dt><dd>Сборка и разборка</dd></div>
+      <div><dt>Неделя</dt><dd>10</dd></div>
+    </dl>
+  </div>
+  <nav class="les-route" aria-labelledby="les-route-title">
+    <h2 id="les-route-title">Что узнаем</h2>
+    <ol>
+      <li><button type="button" data-to="les-was">Что стало лучше</button></li>
+      <li><button type="button" data-to="les-sense">Датчик силы</button></li>
+      <li><button type="button" data-to="les-code">Программа по нажатию</button></li>
+      <li><button type="button" data-to="les-grab">Два захвата</button></li>
+      <li><button type="button" data-to="les-test">Честное испытание</button></li>
+      <li><button type="button" data-to="les-build">Сборка и разборка</button></li>
+      <li><button type="button" data-to="les-auto">Кто решает</button></li>
+      <li><button type="button" data-to="les-quiz">Мини-тест</button></li>
+    </ol>
+  </nav>
+</header>
+
+<section class="les-sec les-was" id="les-was" aria-labelledby="les-was-title">
+  <div>
+    <h2 id="les-was-title">Было и стало</h2>
+    <p class="les-lead">На прошлом уроке мы собрали Роборуку. Сегодня идея та же, а конструкция лучше.</p>
+  </div>
+  <div class="les-vs">
+    <article class="les-vs__col">
+      <svg class="les-vs__pic" viewBox="0 0 230 92" aria-hidden="true"><use href="#les-pic-arm"/></svg>
+      <h3><span>Было</span> Роборука</h3>
+      <dl>
+        <div><dt>Управление</dt><dd>Левая кнопка на хабе. Отвечает только «нажата» или «отпущена».</dd></div>
+        <div><dt>Захват</dt><dd>Один: два пальца с шинами.</dd></div>
+        <div><dt>Порты</dt><dd>Мотор в порту F.</dd></div>
+      </dl>
+    </article>
+    <article class="les-vs__col les-vs__col--now">
+      <svg class="les-vs__pic" viewBox="0 0 360 200" aria-hidden="true"><use href="#les-pic-tool"/></svg>
+      <h3><span>Стало</span> Захваты</h3>
+      <dl>
+        <div><dt>Управление</dt><dd>Отдельный датчик силы на устройстве управления. Он чувствует ещё и то, как сильно его нажали.</dd></div>
+        <div><dt>Захват</dt><dd>Два сменных: гибкий и раздвоенный. У каждого свой мотор.</dd></div>
+        <div><dt>Порты</dt><dd>Мотор в порту A, датчик силы в порту E.</dd></div>
+      </dl>
+    </article>
+  </div>
+  <div class="les-cycle">
+    <p><b>Усовершенствовать конструкцию</b> — значит сделать её лучше. Инженеры делают это по кругу:</p>
+    <ol>
+      <li><b>Собрать</b> Собираем два захвата.</li>
+      <li><b>Испытать</b> Берём ими разные предметы.</li>
+      <li><b>Сравнить</b> Отмечаем в таблице, какой держит.</li>
+      <li><b>Улучшить</b> Решаем, что поменять, и снова испытываем.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="les-sec les-sense" id="les-sense" aria-labelledby="les-sense-title">
+  <div class="les-sense__text">
+    <h2 id="les-sense-title">Датчик силы: касание и сила</h2>
+    <p>Кнопка датчика уходит внутрь на 8&nbsp;мм. Это ровно один модуль LEGO. Датчик проверяет кнопку 100 раз в секунду.</p>
+    <dl class="les-zones">
+      <div class="les-zones__touch"><dt>Касание: первые 2&nbsp;мм</dt><dd>Срабатывает примерно на 1&nbsp;мм, если нажать с силой <span style="white-space:nowrap">0,5–1&nbsp;Н</span>. Отвечает только «нажата» или «не нажата».</dd></div>
+      <div class="les-zones__force"><dt>Сила: от 2 до 8&nbsp;мм</dt><dd>Меряет силу от 2,5 до 10&nbsp;Н с шагом 0,1&nbsp;Н. Больше 10&nbsp;Н не покажет. В приложении SPIKE силу видно в ньютонах <span style="white-space:nowrap">(0–10)</span> или в процентах <span style="white-space:nowrap">(0–100)</span>.</dd></div>
+    </dl>
+    <p class="les-newton"><b>Ньютон (Н)</b> — единица силы. 1&nbsp;Н примерно равен весу яблока массой 100&nbsp;г. 10&nbsp;Н — это вес десяти таких яблок.</p>
+  </div>
+  <div class="les-sense__lab">
+    <div class="les-press" id="les-press" role="slider" tabindex="0" aria-label="Кнопка датчика силы. Стрелка вниз нажимает глубже, стрелка вверх отпускает." aria-valuemin="0" aria-valuemax="8" aria-valuenow="0">
+      <svg viewBox="0 0 420 390" aria-hidden="true">
+        <rect class="les-press__band" x="318" y="74" width="20" height="20"/>
+        <rect class="les-press__band les-press__band--force" x="318" y="94" width="20" height="60"/>
+        <g class="les-press__ticks"><path d="M338 74h12M338 94h12M338 114h8M338 134h8M338 154h12"/><text x="356" y="81">0 мм</text><text x="356" y="102">2</text><text x="356" y="162">8</text></g>
+        <path class="les-press__mark" id="les-press-mark" d="M314 74l-14-9v18z"/>
+        <g id="les-press-cap">
+          <rect class="les-press__shaft" x="190" y="60" width="20" height="110"/>
+          <rect class="les-press__wheel" x="115" y="40" width="170" height="34" rx="8"/>
+          <path class="les-press__tread" d="M133 42v30M151 42v30M169 42v30M187 42v30M205 42v30M223 42v30M241 42v30M259 42v30"/>
+        </g>
+        <path class="les-press__cable les-press__cable--edge" d="M290 345c60 0 70 30 120 30"/><path class="les-press__cable" d="M290 345c60 0 70 30 120 30"/><text class="les-press__to" x="414" y="326">в порт E</text>
+        <rect class="les-press__back" x="110" y="322" width="180" height="40" rx="6"/>
+        <rect class="les-press__body" x="110" y="160" width="180" height="172" rx="12"/>
+        <rect class="les-press__collar" x="180" y="160" width="40" height="14" rx="3"/>
+        <circle class="les-press__hole" cx="134" cy="200" r="9"/><circle class="les-press__hole" cx="266" cy="200" r="9"/>
+        <circle class="les-press__hole" cx="134" cy="300" r="9"/><circle class="les-press__hole" cx="266" cy="300" r="9"/>
+      </svg>
+    </div>
+    <div class="les-read">
+      <p><span>Ход кнопки</span><b><output id="les-depth">0,0</output> мм</b></p>
+      <p><span>Зона</span><b id="les-zone">не нажата</b></p>
+      <p><span>Сила</span><b><output id="les-force">0 Н · 0 %</output></b></p>
+      <ul class="les-answers" aria-label="Что сейчас ответит датчик">
+        <li data-ans="pressed"><span class="blk blk--bool blk--sense"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>—<span class="blk__dd">нажата</span>?</span><b>нет</b></li>
+        <li data-ans="hard"><span class="blk blk--bool blk--sense"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>—<span class="blk__dd">сильно нажата</span>?</span><b>нет</b></li>
+        <li data-ans="released"><span class="blk blk--bool blk--sense"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>—<span class="blk__dd">отпущена</span>?</span><b>да</b></li>
+      </ul>
+    </div>
+    <p class="les-press__hint">Нажми на колёсико и тяни вниз: чем глубже, тем сильнее. «Сильно нажата» на этом сайте: от 7&nbsp;Н.</p>
+  </div>
+</section>
+
+<section class="les-sec les-code" id="les-code" aria-labelledby="les-code-title">
+  <div>
+    <h2 id="les-code-title">Программирование по нажатию</h2>
+    <p class="les-lead">Датчик можно спросить четырьмя способами. Мотор захвата в порту A: в положении 345 захват сжат, в положении 25 разжат.</p>
+  </div>
+  <div class="les-ways">
+    <article class="les-way">
+      <h3>Событие</h3>
+      <div class="les-prog" role="img" aria-label="Программа: E когда нажата, A перейти против часовой в положение 345.">
+        <div class="blk blk--hat blk--event"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>когда<span class="blk__dd">нажата</span></div>
+        <div class="blk blk--motor"><svg class="blk__ico"><use href="#les-ico-motor"/></svg><span class="blk__port">A</span>перейти<span class="blk__dd">против часовой</span>в положение<span class="blk__num">345</span></div>
+      </div>
+      <p>Подпрограмма ждёт нажатия сама. Подходит, когда нажатие должно что-то запустить.</p>
+    </article>
+    <article class="les-way">
+      <h3>Ожидание</h3>
+      <div class="les-prog" role="img" aria-label="Программа: когда запускается подпрограмма, ждать до E нажата, A перейти против часовой в положение 345.">
+        <div class="blk blk--hat blk--event"><svg class="blk__ico"><use href="#les-ico-play"/></svg>когда запускается подпрограмма</div>
+        <div class="blk blk--ctl">ждать до<span class="blk blk--bool blk--sense"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>—<span class="blk__dd">нажата</span>?</span></div>
+        <div class="blk blk--motor"><svg class="blk__ico"><use href="#les-ico-motor"/></svg><span class="blk__port">A</span>перейти<span class="blk__dd">против часовой</span>в положение<span class="blk__num">345</span></div>
+      </div>
+      <p>Программа идёт по шагам и на этом шаге ждёт нажатия. Подходит, когда действия идут по порядку.</p>
+    </article>
+    <article class="les-way">
+      <h3>Условие</h3>
+      <div class="les-prog" role="img" aria-label="Программа: повторять всегда: если E нажата, то A перейти против часовой в положение 345, иначе A перейти самым коротким путём в положение 25.">
+        <div class="blk blk--hat blk--event"><svg class="blk__ico"><use href="#les-ico-play"/></svg>когда запускается подпрограмма</div>
+        <div class="blk-c blk--ctl">
+          <div class="blk blk--ctl">повторять всегда</div>
+          <div class="blk-c__in">
+            <div class="blk-c blk--ctl">
+              <div class="blk blk--ctl">если<span class="blk blk--bool blk--sense"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>—<span class="blk__dd">нажата</span>?</span>то</div>
+              <div class="blk-c__in"><div class="blk blk--motor"><svg class="blk__ico"><use href="#les-ico-motor"/></svg><span class="blk__port">A</span>перейти<span class="blk__dd">против часовой</span>в положение<span class="blk__num">345</span></div></div>
+              <div class="blk blk--ctl">иначе</div>
+              <div class="blk-c__in"><div class="blk blk--motor"><svg class="blk__ico"><use href="#les-ico-motor"/></svg><span class="blk__port">A</span>перейти<span class="blk__dd">самым коротким путём</span>в положение<span class="blk__num">25</span></div></div>
+              <div class="blk-c__end"></div>
+            </div>
+          </div>
+          <div class="blk-c__end"></div>
+        </div>
+      </div>
+      <p>Программа всё время проверяет датчик и выбирает одно из двух: нажата, значит сжать, иначе разжать.</p>
+    </article>
+    <article class="les-way">
+      <h3>Значение</h3>
+      <div class="les-prog" role="img" aria-label="Программа: повторять всегда: A запустить мотор с мощностью, равной давлению E в процентах, умноженному на минус 1.">
+        <div class="blk blk--hat blk--event"><svg class="blk__ico"><use href="#les-ico-play"/></svg>когда запускается подпрограмма</div>
+        <div class="blk-c blk--ctl">
+          <div class="blk blk--ctl">повторять всегда</div>
+          <div class="blk-c__in">
+            <div class="blk blk--motor"><svg class="blk__ico"><use href="#les-ico-motor"/></svg><span class="blk__port">A</span>запустить мотор с мощностью<span class="blk blk--round blk--op"><span class="blk blk--round blk--sense"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>давление в<span class="blk__dd">%</span></span>*<span class="blk__num">-1</span></span>%</div>
+          </div>
+          <div class="blk-c__end"></div>
+        </div>
+      </div>
+      <p>Датчик выдаёт число от 0 до 100. Чем сильнее жмёшь, тем сильнее мотор сжимает захват. Минус нужен потому, что захват сжимается, когда мотор крутится против часовой стрелки.</p>
+    </article>
+  </div>
+</section>
+
+<section class="les-sec les-grab" id="les-grab" aria-labelledby="les-grab-title">
+  <div>
+    <h2 id="les-grab-title">Два захвата</h2>
+    <p class="les-lead">Хаб и датчик одни, а захваты меняются. Захват крепится спереди к устройству управления, кабель его мотора идёт в хаб.</p>
+  </div>
+  <div class="les-grab__bench">
+    <div class="les-grab__stage" id="les-grab-stage" role="img" aria-label="Трёхмерная модель: устройство управления с захватом. Её можно вращать."></div>
+    <div class="les-grab__panel">
+      <div class="les-switch" role="group" aria-label="Какой захват на модели">
+        <button type="button" data-grabber="1" aria-pressed="false">Захват 1</button>
+        <button type="button" data-grabber="2" aria-pressed="true">Захват 2</button>
+      </div>
+      <label class="les-range">Сжать захват<input type="range" id="les-grip" min="0" max="100" value="0"></label>
+      <p class="les-grab__motor">Мотор A в положении <output id="les-grip-pos">25</output>°</p>
+      <article class="les-gr" data-card="1" hidden>
+        <h3>Гибкий</h3>
+        <dl>
+          <div><dt>Как держит</dt><dd>Две петли из серого ребристого шланга сходятся и зажимают предмет.</dd></div>
+          <div><dt>Хорошо берёт</dt><dd>Лёгкое и гибкое.</dd></div>
+          <div><dt>Плохо берёт</dt><dd>Большое, тяжёлое или гладкое.</dd></div>
+        </dl>
+        <p class="les-gr__kin">Похож на мягкий захват из прошлого урока: его петли гнутся, как резиновые пальцы.</p>
+      </article>
+      <article class="les-gr" data-card="2">
+        <h3>Раздвоенный</h3>
+        <dl>
+          <div><dt>Как держит</dt><dd>Две жёсткие челюсти из чёрных гнутых балок сжимают предмет с двух сторон. Одна челюсть раздвоена.</dd></div>
+          <div><dt>Хорошо берёт</dt><dd>Большое и тяжёлое.</dd></div>
+          <div><dt>Плохо берёт</dt><dd>Маленькое: его почти невозможно взять.</dd></div>
+        </dl>
+        <p class="les-gr__kin">Это пальцевый захват, как у Роборуки, только без резиновых шин.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="les-sec les-test" id="les-test" aria-labelledby="les-test-title">
+  <div class="les-test__head">
+    <h2 id="les-test-title">Честное испытание</h2>
+    <p class="les-lead">Как узнать, какой захват лучше? Испытать оба одинаково. В честном испытании меняется только одно, всё остальное остаётся как было.</p>
+    <p class="les-test__ask"><b>Обсудите</b> Зачем люди собирают мусор захватом?</p>
+  </div>
+  <div class="les-trials" id="les-trials"></div>
+  <div class="les-test__foot">
+    <p>Нажми на клетку: <b class="les-mark is-yes">✓</b> держит, ещё раз <b class="les-mark is-no">✗</b> не держит, ещё раз пусто.</p>
+    <button type="button" class="btn" id="les-test-clear">Очистить таблицу</button>
+  </div>
+</section>
+
+<section class="les-sec les-build" id="les-build" aria-labelledby="les-build-title">
+  <div>
+    <h2 id="les-build-title">Сборка и разборка</h2>
+    <p class="les-lead">Инструкция в приложении SPIKE: <b>Модели → Захваты</b>. В ней 66 шагов и три сборки: устройство управления (15 шагов), захват 1 (23 шага), захват 2 (28 шагов).</p>
+  </div>
+  <div class="les-build__bench">
+    <div class="les-build__stage" id="les-build-stage" role="img" aria-label="Трёхмерная модель на этапе сборки. Её можно вращать."></div>
+    <div class="les-build__card" aria-live="polite">
+      <p class="les-build__steps"><span id="les-stage-n"></span> <span id="les-stage-steps"></span></p>
+      <h3 id="les-stage-title"></h3>
+      <p id="les-stage-text"></p>
+      <p class="les-build__parts"><b>Детали</b> <span id="les-stage-parts"></span></p>
+      <div class="les-build__nav">
+        <button type="button" class="btn" id="les-stage-prev">Назад</button>
+        <button type="button" class="btn btn--primary" id="les-stage-next">Дальше</button>
+      </div>
+    </div>
+  </div>
+  <ol class="les-rail" id="les-rail" aria-label="Этапы сборки, по сборкам из приложения"></ol>
+  <div class="les-build__how">
+    <p><b>Работаем в парах.</b> Ученик А собирает захват 1. Ученик Б собирает устройство управления и захват 2.</p>
+    <p class="les-ports"><span>Мотор захвата <b>A</b></span><span>Датчик силы <b>E</b></span></p>
+  </div>
+  <div class="les-build__take">
+    <label class="les-range">Разобрать<input type="range" id="les-explode" min="0" max="100" value="0"></label>
+    <p>В конце урока разберите модели и разложите детали по ячейкам: штифты к штифтам, балки к балкам. Кабель датчика силы не отсоединяется от датчика: не тяните за него.</p>
+  </div>
+</section>
+
+<section class="les-sec les-auto" id="les-auto" aria-labelledby="les-auto-title">
+  <div class="les-auto__head">
+    <h2 id="les-auto-title">Кто решает, когда сжать?</h2>
+    <p>Манипулятор — это рука робота. Автономия — это когда машина сама решает, что делать. Поэтому тема называется «Манипуляторы и автономия».</p>
+  </div>
+  <ol class="les-ladder">
+    <li>
+      <div class="les-ladder__here">
+        <svg viewBox="0 0 360 200" aria-hidden="true"><use href="#les-pic-tool"/></svg>
+        <p><b>Захваты сейчас здесь.</b> Когда сжать, решаешь ты. Программа превращает нажатие в движение мотора.</p>
+      </div>
+      <h3>Ручное управление</h3>
+      <p class="les-ladder__who">Решает человек</p>
+      <p>Каждую команду даёт человек. Без него машина не двигается.</p>
+    </li>
+    <li>
+      <h3>Программа</h3>
+      <p class="les-ladder__who">Решает программа, её написал человек</p>
+      <p>Шаги записаны заранее, машина повторяет их сама.</p>
+      <p class="les-ladder__next">В наших захватах программа уже решает, как мотору двигаться и где остановиться.</p>
+    </li>
+    <li>
+      <h3>Автономия</h3>
+      <p class="les-ladder__who">Решает машина</p>
+      <p>Машина сама чувствует датчиками и сама выбирает, что делать.</p>
+      <p class="les-ladder__next">Следующий шаг: датчик на самой клешне. Захват сам почувствует предмет и сам его сожмёт.</p>
+    </li>
+  </ol>
+</section>
+
+<section class="les-sec les-quiz" id="les-quiz" aria-labelledby="les-quiz-title">
+  <div class="les-quiz__head">
+    <h2 id="les-quiz-title">Мини-тест</h2>
+    <p class="les-quiz__pins" id="les-quiz-pins" role="img"></p>
+    <p class="les-quiz__last" id="les-quiz-last"></p>
+  </div>
+  <div class="les-quiz__box" id="les-quiz-box"></div>
+</section>
+
+<footer class="les-foot">
+  <a class="btn btn--primary les-foot__next" href="#examples">Дальше: в жизни</a>
+  <p>LEGO и SPIKE — товарные знаки LEGO Group. Это учебный материал учителя, он не связан с LEGO Group и не одобрен ею.</p>
+</footer>
+
+</div>

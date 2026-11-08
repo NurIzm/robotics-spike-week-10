@@ -1,0 +1,355 @@
+/* Lesson: one long page for a projector. Every section takes the form of its idea; colours come from the kit. */
+
+/* At height:100% the body ends after one screen and the sticky top bar scrolls away with it. */
+body[data-view="lesson"] { height: auto; min-height: 100%; }
+
+.les {
+  --pad: clamp(16px, 5vw, 96px);
+  --screen: calc(100vh - var(--topbar-h));
+  --h2: clamp(28px, min(3.6vw, 6.4vh), 72px);
+  --grey: #a9b0b5;
+  font-size: clamp(19px, 0.9vw + 11px, 28px);
+  line-height: 1.42;
+}
+.les-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.les h2 { font-size: var(--h2); }
+.les h3 { font-size: calc(var(--h2) * 0.6); }
+.les-sec {
+  display: flex; flex-direction: column; justify-content: center; gap: clamp(16px, 3vh, 36px);
+  min-height: var(--screen);
+  padding: clamp(28px, 6vh, 64px) var(--pad);
+  scroll-margin-top: var(--topbar-h);
+}
+.les-lead { max-width: 46em; margin-top: 10px; color: var(--ink-2); }
+.les input[type="range"] { width: 100%; height: 32px; margin: 0; accent-color: var(--magenta); cursor: pointer; }
+.les-range { display: block; font-weight: 700; }
+.les dl { margin: 0; }
+.les dd { margin: 0; }
+
+/* ---------- Header: the same yellow as the start screen, the route is a beam with a hole for each stop ---------- */
+.les-head {
+  display: flex; flex-direction: column; justify-content: space-between; gap: clamp(20px, 4vh, 48px);
+  min-height: var(--screen);
+  padding: clamp(28px, 6vh, 72px) var(--pad);
+  background: var(--yellow);
+}
+.les-head__kicker { font-weight: 700; }
+.les-head h1 { font-size: clamp(33px, min(7.2vw, 13vh), 136px); font-weight: 900; line-height: 1.02; letter-spacing: -0.01em; }
+.les-head__mid { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px 48px; }
+.les-head__facts { display: flex; flex-wrap: wrap; gap: 12px clamp(24px, 3vw, 48px); }
+.les-head__facts dt { font-size: 0.8em; font-weight: 700; }
+.les-head__facts dd { font: 700 1.1em/1.3 var(--font-mono); word-spacing: -0.3em; white-space: nowrap; }
+.les-head__goal { flex: 1 1 26em; max-width: 34em; font-size: 1.1em; line-height: 1.34; }
+.les-head__goal b { display: block; font-size: 0.8em; }
+.les-route h2 { margin-bottom: 14px; font-size: calc(var(--h2) * 0.5); }
+.les-route ol { position: relative; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; }
+.les-route ol::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 32px; border-radius: 16px;
+  background: var(--magenta); box-shadow: inset 0 -3px 0 var(--magenta-deep);
+}
+.les-route button {
+  position: relative; display: block; width: 100%; padding: 42px 12px 4px 6px;
+  border: 0; background: none; color: var(--ink);
+  font-size: 0.8em; font-weight: 700; line-height: 1.22; text-align: left; cursor: pointer;
+}
+.les-route button:hover { text-decoration: underline; text-underline-offset: 3px; }
+.les-route button::before {
+  content: ""; position: absolute; left: 6px; top: 5px; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--magenta-deep); box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.28);
+}
+.les-route li:first-child button::before { left: 8px; }
+
+/* ---------- Before and after: two columns whose rows line up ---------- */
+.les-was { background: var(--paper); }
+.les-vs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); gap: 0 clamp(16px, 3vw, 48px); }
+.les-vs__col { display: grid; grid-row: span 5; grid-template-rows: subgrid; min-width: 0; }
+.les-vs__pic { display: block; width: 100%; height: clamp(110px, 20vh, 220px); padding: 12px; background: var(--mist); border-bottom: 6px solid var(--ink); }
+.les-vs__col h3 { padding-top: 10px; }
+.les-vs__col h3 span { display: block; font: 700 0.5em/1.4 var(--font-body); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-2); }
+.les-vs__col--now h3 span { color: var(--magenta-deep); }
+.les-vs dl { display: contents; }
+.les-vs dl > div { padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 0.9em; line-height: 1.28; }
+.les-vs dt { font-weight: 800; }
+.les-vs dd { color: var(--ink-2); }
+.les-vs__col--now dd { color: var(--ink); }
+
+/* The cycle is a beam: four holes, and the last one leads back to the first. */
+.les-cycle ol { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 12px 0 0; padding: 0; list-style: none; }
+.les-cycle ol::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 32px; border-radius: 16px;
+  background: var(--azure); box-shadow: inset 0 -3px 0 var(--azure-deep);
+}
+.les-cycle li { position: relative; padding: 42px 8px 0 4px; font-size: 0.86em; line-height: 1.25; color: var(--ink-2); }
+.les-cycle li::before {
+  content: ""; position: absolute; left: 8px; top: 5px; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--azure-deep); box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.28);
+}
+.les-cycle li:not(:last-child)::after { content: "→"; position: absolute; right: -10px; top: 1px; color: #fff; font-weight: 800; line-height: 30px; }
+.les-cycle li:last-child::after { content: "↺"; position: absolute; right: 12px; top: 1px; color: #fff; font-weight: 800; line-height: 30px; }
+.les-cycle li b { display: block; font-size: 1.08em; color: var(--ink); }
+
+/* ---------- Force Sensor: a sensor you press, the two zones on a ruler ---------- */
+.les-sense { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr); gap: 16px clamp(24px, 4vw, 72px); align-content: center; background: var(--mist); }
+.les-sense__text { display: flex; flex-direction: column; gap: 14px; }
+.les-zones { display: grid; gap: 10px; }
+.les-zones > div { padding: 8px 14px; border-left: 8px solid var(--azure); background: var(--paper); font-size: 0.9em; line-height: 1.3; }
+.les-zones .les-zones__force { border-color: var(--magenta); }
+.les-zones dt { font-weight: 800; }
+.les-zones dd { color: var(--ink-2); }
+.les-newton { font-size: 0.9em; }
+.les-sense__lab { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 8px 20px; align-items: center; }
+.les-press { touch-action: none; cursor: ns-resize; user-select: none; -webkit-user-select: none; }
+.les-press svg { display: block; width: 100%; height: auto; max-height: 60vh; }
+.les-press__band { fill: var(--azure); }
+.les-press__band--force { fill: var(--magenta); }
+.les-press__ticks path { stroke: var(--ink); stroke-width: 2; }
+.les-press__ticks text { font: 700 21px var(--font-mono); fill: var(--ink-2); }
+.les-press__mark { fill: var(--ink); }
+.les-press__shaft { fill: var(--black); }
+.les-press__wheel { fill: var(--black); }
+.les-press__tread { stroke: #3c4148; stroke-width: 4; }
+.les-press__cable { fill: none; stroke: #fff; stroke-width: 14; stroke-linecap: round; }
+.les-press__cable--edge { stroke: var(--grey); stroke-width: 18; }
+.les-press__to { font: 700 21px var(--font-mono); fill: var(--ink-2); text-anchor: end; }
+.les-press__back { fill: var(--black); }
+.les-press__body { fill: #f7f8f8; stroke: var(--ink); stroke-width: 3; }
+.les-press__collar { fill: var(--black); }
+.les-press__hole { fill: #d9dee1; stroke: #a9b0b5; stroke-width: 3; }
+.les-press:focus-visible { outline-offset: 4px; }
+.les-read { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.les-read > p span { display: block; font-size: 0.72em; font-weight: 700; color: var(--ink-2); }
+.les-read > p b { font: 700 1.25em/1.15 var(--font-mono); }
+.les-read.is-touch #les-force { font: 700 0.72em/1.2 var(--font-body); color: var(--azure-deep); }
+#les-zone { font-family: var(--font-body); }
+.les-read.is-touch #les-zone { color: var(--azure-deep); }
+.les-read.is-force #les-zone { color: var(--magenta-deep); }
+.les-answers { display: grid; gap: 6px; margin: 6px 0 0; padding: 0; list-style: none; }
+.les-answers li { display: flex; align-items: center; gap: 10px; opacity: 0.5; transition: opacity 0.12s; }
+.les-answers li.is-on { opacity: 1; }
+.les-answers li > b { font: 700 0.8em/1 var(--font-mono); }
+.les-answers .blk { font-size: clamp(12px, 0.62em, 17px); flex-wrap: nowrap; }
+.les-answers li.is-on > b { color: var(--ok); }
+.les-press__hint { grid-column: 1 / -1; font-size: 0.8em; color: var(--ink-2); }
+
+/* ---------- SPIKE-looking blocks, drawn in HTML: colours of week 9 §6 ---------- */
+.blk {
+  --f: #0090F5; --s: #0078CC; --e: #0062A6;
+  position: relative; display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 6px;
+  min-height: 2.6em; padding: 0.3em 0.6em 0.3em 0.3em;
+  max-width: 100%; border: 1px solid var(--e); border-radius: 0.3em; background: var(--f); color: #fff;
+  font: 500 1em/1.1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.blk--motor { --f: #0090F5; --s: #0078CC; --e: #0062A6; }
+.blk--event { --f: #F5C402; --s: #C8A300; --e: #B09400; }
+.blk--ctl { --f: #FFB515; --s: #ECA100; --e: #C98A01; }
+.blk--sense { --f: #34CCF1; --s: #00A8C9; --e: #368FA9; }
+.blk--op { --f: #00B94D; --s: #00963E; --e: #006A2A; }
+.blk__ico { width: 2em; height: 2em; flex: none; padding-right: 0.3em; border-right: 1px solid var(--s); color: var(--s); box-sizing: content-box; }
+.blk__port {
+  display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; border-radius: 50%;
+  background: var(--s); border: 1px solid var(--e); font-weight: 700;
+}
+.blk__dd, .blk__num, .blk__port { white-space: nowrap; }
+.blk__dd { padding: 0.25em 0.45em; border: 1px solid var(--e); border-radius: 0.25em; background: var(--s); }
+.blk__dd::after { content: " ▾"; font-size: 0.8em; }
+.blk__num { min-width: 2em; padding: 0.25em 0.6em; border-radius: 1em; background: #fff; color: #575e75; text-align: center; }
+.blk--hat { border-radius: 1.2em 0.3em 0.3em 0.3em; padding-top: 0.6em; }
+.blk--bool, .blk--round { min-height: 2.1em; padding: 0.15em 0.5em; gap: 4px 5px; }
+.blk--round { border-radius: 1.1em; }
+.blk--bool { border: 0; padding-inline: 0.9em; clip-path: polygon(0.8em 0, calc(100% - 0.8em) 0, 100% 50%, calc(100% - 0.8em) 100%, 0.8em 100%, 0 50%); }
+.blk--bool .blk__ico, .blk--round .blk__ico { width: 1.5em; height: 1.5em; }
+/* A stack: each block's tab sits in the notch of the block below. */
+.les-prog { display: flex; flex-direction: column; align-items: flex-start; font-size: clamp(12px, 0.66em, 18px); }
+.les-prog > .blk:not(:last-child)::after, .blk-c__in > .blk:not(:last-child)::after {
+  content: ""; position: absolute; z-index: 1; left: 0.9em; bottom: -0.45em; width: 1.6em; height: 0.45em;
+  background: var(--f); border: 1px solid var(--e); border-top: 0; border-radius: 0 0 0.3em 0.3em;
+}
+.blk-c { display: flex; flex-direction: column; align-items: flex-start; }
+.blk-c > .blk { border-radius: 0.3em 0.3em 0.3em 0; }
+.blk-c > .blk + .blk-c__in + .blk { border-radius: 0 0.3em 0.3em 0; }
+.blk-c__in { display: flex; flex-direction: column; align-items: flex-start; padding: 0 0 0 1.1em; background: linear-gradient(90deg, #FFB515 1.1em, transparent 0); border-left: 1px solid #C98A01; }
+.blk-c__in:empty { min-height: 1.4em; }
+.blk-c__end { width: 6em; height: 1.1em; background: #FFB515; border: 1px solid #C98A01; border-top: 0; border-radius: 0 0 0.3em 0.3em; }
+
+/* ---------- Four ways to ask the sensor ---------- */
+.les-code { background: var(--paper); }
+.les-ways { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 3vh, 32px) clamp(16px, 3vw, 48px); }
+.les-way { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding-top: 10px; border-top: 6px solid var(--ink); }
+.les-way .les-prog { padding: 4px 0 8px; }
+.les-way > p { font-size: 0.86em; line-height: 1.3; color: var(--ink-2); }
+
+/* ---------- Two grabbers: the model with a switch, a slider and one card ---------- */
+.les-grab { background: var(--mist); }
+.les-grab__bench { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(16px, 3vw, 48px); align-items: stretch; }
+.les-grab__stage { position: relative; min-height: clamp(280px, 56vh, 720px); background: var(--paper); cursor: grab; }
+.les-grab__stage:active { cursor: grabbing; }
+.les-grab__panel { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.les-switch { display: grid; grid-template-columns: 1fr 1fr; border: 3px solid var(--ink); border-radius: 14px; overflow: hidden; }
+.les-switch button { min-height: 52px; padding: 6px 10px; border: 0; background: var(--paper); font-weight: 800; cursor: pointer; }
+.les-switch button + button { border-left: 3px solid var(--ink); }
+.les-switch button[aria-pressed="true"] { background: var(--magenta); color: #fff; }
+.les-switch button:focus-visible { outline-offset: -6px; outline-color: var(--yellow); }
+.les-grab__motor { font-size: 0.86em; color: var(--ink-2); }
+.les-grab__motor output { font: 700 1.1em var(--font-mono); color: var(--ink); }
+.les-gr { display: flex; flex-direction: column; gap: 6px; }
+.les-gr[hidden] { display: none; }
+.les-gr dl > div { padding: 5px 0; border-bottom: 1px solid var(--line); font-size: 0.86em; line-height: 1.28; }
+.les-gr dt { font-weight: 800; }
+.les-gr dd { color: var(--ink-2); }
+.les-gr__kin { padding: 8px 12px; border-left: 8px solid var(--magenta); background: var(--paper); font-size: 0.86em; line-height: 1.3; font-weight: 600; }
+
+/* ---------- Fair test: two tables the class fills in on the projector ---------- */
+.les-test { background: var(--paper); }
+.les-test__ask { margin-top: 10px; }
+.les-test__ask b { margin-right: 8px; color: var(--magenta-deep); }
+.les-trials { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px clamp(16px, 3vw, 48px); }
+.les-trial { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.les-trial > p { font-size: 0.86em; color: var(--ink-2); }
+.les-tab { width: 100%; border-collapse: collapse; }
+.les-tab th, .les-tab td { padding: 0; border: 2px solid var(--ink); text-align: left; }
+.les-tab thead th { padding: 6px 10px; background: var(--ink); color: #fff; font-size: 0.8em; }
+.les-tab tbody th { padding: 6px 10px; font-size: 0.86em; line-height: 1.2; }
+.les-tab tbody th small { display: block; font-size: 0.8em; font-weight: 500; color: var(--ink-2); }
+.les-tab td { width: 28%; }
+.les-cell { display: grid; place-items: center; width: 100%; min-height: 64px; padding: 4px; border: 0; background: var(--paper); cursor: pointer; font-weight: 700; }
+.les-cell:hover { background: var(--mist); }
+.les-cell:focus-visible { outline-offset: -5px; }
+.les-cell.is-yes { background: #dff3e8; color: var(--ok); }
+.les-cell.is-no { background: #fbe6dc; color: var(--warn); }
+.les-cell b, .les-mark { font: 800 1.4em/1 var(--font-body); }
+.les-cell small { display: block; font-size: 0.6em; }
+.les-mark { font-size: 1.1em; }
+.les-mark.is-yes { color: var(--ok); }
+.les-mark.is-no { color: var(--warn); }
+.les-trial__sum { min-height: 2.6em; padding: 8px 12px; border-left: 8px solid var(--yellow); background: var(--mist); font-size: 0.86em; line-height: 1.3; }
+.les-trial__sum b { font-weight: 800; }
+.les-test__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; font-size: 0.86em; color: var(--ink-2); }
+
+/* ---------- Build: one hole per stage, beams grouped by the app's three builds ---------- */
+.les-build { background: var(--mist); }
+.les-build__bench { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: clamp(16px, 3vw, 48px); align-items: stretch; }
+.les-build__stage { position: relative; min-height: clamp(240px, 46vh, 640px); background: var(--paper); cursor: grab; }
+.les-build__stage:active { cursor: grabbing; }
+.les-build__card { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.les-build__steps { font: 700 0.8em/1.3 var(--font-mono); color: var(--magenta-deep); }
+.les-build__parts { font-size: 0.86em; line-height: 1.28; color: var(--ink-2); }
+.les-build__parts b { display: block; color: var(--ink); }
+.les-build__nav { display: flex; gap: 12px; margin-top: auto; padding-top: 8px; }
+.les-build__nav .btn { flex: 1; padding: 0 12px; }
+.les-build__nav .btn:disabled { opacity: 0.4; cursor: default; }
+
+.les-rail { display: flex; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.les-rail > li { flex: 1 1 0; min-width: 0; }
+.les-rail__beam { display: flex; border-radius: 22px; overflow: hidden; box-shadow: inset 0 -3px 0 var(--magenta-deep); background: var(--magenta); }
+.les-rail button {
+  display: grid; place-items: center; flex: 1; height: clamp(34px, 3.4vw, 44px); padding: 0;
+  border: 0; background: none; cursor: pointer;
+}
+.les-rail button:hover { background: #d94494; }
+.les-rail i {
+  display: block; width: clamp(16px, 1.9vw, 26px); aspect-ratio: 1; border-radius: 50%;
+  background: var(--magenta-deep); box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+.les-rail .is-done i { background: radial-gradient(circle at 40% 35%, #fff2a8, var(--yellow) 60%); }
+.les-rail .is-now { background: var(--ink); }
+.les-rail .is-now i { background: radial-gradient(circle at 40% 35%, #fff2a8, var(--yellow) 60%); }
+.les-rail span { display: block; padding-top: 6px; font-size: clamp(13px, 0.66em, 18px); font-weight: 600; line-height: 1.2; color: var(--ink-2); text-align: center; }
+
+.les-build__how { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 32px; }
+.les-build__how > p:first-child { flex: 1 1 24em; }
+.les-ports { display: flex; flex-wrap: wrap; gap: 12px; }
+.les-ports span { display: inline-flex; align-items: center; gap: 10px; padding: 4px 4px 4px 14px; border-radius: 26px; background: var(--paper); border: 2px solid var(--ink); font-weight: 700; }
+.les-ports b { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: #fff; font: 700 20px/1 var(--font-mono); }
+.les-build__take { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: clamp(16px, 3vw, 48px); align-items: center; }
+.les-build__take p { font-size: 0.86em; line-height: 1.28; color: var(--ink-2); }
+
+/* ---------- Ladder: the higher the step, the more the machine decides ---------- */
+.les-auto { background: var(--magenta); color: #fff; }
+.les-auto__head p { max-width: 42em; margin-top: 10px; }
+.les-ladder { --rise: clamp(56px, 11vh, 120px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; margin: 0; padding: 0; list-style: none; color: var(--ink); }
+.les-ladder li { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 16px clamp(12px, 1.6vw, 24px) 18px; background: var(--paper); font-size: 0.9em; line-height: 1.3; }
+.les-ladder li:nth-child(1) { margin-top: calc(var(--rise) * 2); }
+.les-ladder li:nth-child(2) { margin-top: var(--rise); background: var(--yellow); }
+.les-ladder li:nth-child(3) { background: var(--azure); }
+.les-ladder__who { font-weight: 800; }
+.les-ladder__next { margin-top: auto; padding-top: 6px; border-top: 2px dashed var(--ink); font-weight: 600; }
+.les-ladder__here { position: absolute; left: 0; right: 0; bottom: 100%; display: flex; align-items: flex-end; gap: 12px; padding-bottom: 8px; color: #fff; line-height: 1.2; font-size: 0.9em; }
+.les-ladder__here svg { flex: none; width: clamp(110px, 11vw, 170px); height: auto; padding: 6px; border-radius: 10px; background: #fff; }
+
+/* ---------- Quiz ---------- */
+.les-quiz { background: var(--yellow); }
+.les-quiz__head { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 24px; }
+.les-quiz__pins { display: flex; gap: 8px; }
+.les-quiz__pins i {
+  display: block; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--paper); box-shadow: inset 0 0 0 3px var(--ink);
+}
+.les-quiz__pins i.is-now { box-shadow: inset 0 0 0 6px var(--ink); }
+.les-quiz__pins i.is-right { background: var(--ok); }
+.les-quiz__pins i.is-wrong { background: linear-gradient(45deg, transparent 43%, #fff 43% 57%, transparent 57%), var(--warn); }
+.les-quiz__last { font-weight: 600; }
+.les-quiz__box { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px clamp(24px, 4vw, 72px); align-items: start; min-height: 21em; }
+.les-quiz__ask { display: flex; flex-direction: column; gap: 14px; }
+.les-quiz__q { font: 800 calc(var(--h2) * 0.84)/1.16 var(--font-body); }
+.les-opts { display: grid; gap: 12px; }
+.les-opt {
+  display: flex; align-items: center; width: 100%; min-height: 60px; padding: 10px 20px;
+  border: 3px solid var(--ink); border-radius: 12px; background: var(--paper); color: var(--ink);
+  font-size: 1.05em; font-weight: 700; line-height: 1.2; text-align: left; cursor: pointer;
+  box-shadow: 0 3px 0 var(--ink);
+}
+.les-opt:hover:enabled { transform: translateY(1px); box-shadow: 0 2px 0 var(--ink); }
+.les-opt:disabled { cursor: default; box-shadow: none; }
+.les-opt.is-right { background: var(--ok); color: #fff; }
+.les-opt.is-wrong { background: var(--warn); color: #fff; }
+.les-opt.is-right::after, .les-opt.is-wrong::after { margin-left: auto; padding-left: 12px; font-size: 0.72em; }
+.les-opt.is-right::after { content: "Верно"; }
+.les-opt.is-wrong::after { content: "Твой ответ"; }
+.les-quiz__why b { font-weight: 800; }
+.les-quiz__foot { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.les-quiz__end { display: flex; flex-direction: column; gap: 14px; grid-column: 1 / -1; }
+.les-quiz__score { font: 700 clamp(64px, 11vw, 160px)/1 var(--font-mono); word-spacing: -0.3em; }
+
+.les-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; padding: 28px var(--pad); background: var(--paper); }
+.les-foot__next { min-height: 56px; padding: 0 32px; font-size: 19px; }
+.les-foot p { flex: 1 1 320px; max-width: 44em; font-size: 15px; line-height: 1.35; color: var(--ink-2); }
+
+/* ---------- Narrow screens ---------- */
+@media (max-width: 1100px) {
+  .les-route ol { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 14px; }
+  .les-route ol::before { display: none; }
+  .les-route button { padding: 0 8px 0 40px; }
+  .les-route button::before, .les-route li:first-child button::before { left: 6px; top: 0; background: var(--magenta); }
+  .les-sense { grid-template-columns: minmax(0, 1fr); }
+  .les-ways { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 860px) {
+  .les-sec, .les-head { min-height: 0; }
+  .les-route ol { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+  .les-route button { padding-block: 12px; }
+  .les-route button::before, .les-route li:first-child button::before { top: 12px; }
+
+  .les-vs { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; row-gap: 24px; }
+  .les-vs__col { grid-row: auto; grid-template-rows: none; }
+  .les-cycle ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .les-cycle ol::before { display: none; }
+  .les-cycle li { padding: 0 4px 0 36px; }
+  .les-cycle li::before { left: 0; top: 2px; background: var(--azure); }
+  .les-cycle li::after { display: none; }
+
+  .les-grab__bench, .les-build__bench, .les-build__take, .les-trials { grid-template-columns: minmax(0, 1fr); }
+  .les-grab__stage { min-height: 320px; }
+  .les-build__stage { min-height: 300px; }
+
+  .les-ladder { grid-template-columns: minmax(0, 1fr); }
+  .les-ladder li:nth-child(1), .les-ladder li:nth-child(2) { margin-top: 0; }
+  .les-ladder__here { position: static; color: var(--ink); order: 9; padding: 8px 0 0; }
+  .les-quiz__box { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+}
+@media (max-width: 560px) {
+  .les-sense__lab { grid-template-columns: minmax(0, 1fr); }
+  .les-press svg { max-height: 40vh; }
+  .les-cycle ol { grid-template-columns: minmax(0, 1fr); }
+  .les-rail { flex-wrap: wrap; }
+  .les-rail > li { flex-basis: calc(50% - 3px); }
+}

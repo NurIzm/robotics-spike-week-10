@@ -1,0 +1,126 @@
+/* "В жизни": the canvas is the lesson, the list of examples is a Technic beam like the top nav, a pin marks a seen example. */
+.ex {
+  display: grid; grid-template-columns: minmax(0, 1fr) clamp(340px, 29vw, 520px);
+  min-height: calc(100vh - var(--topbar-h));
+  background: var(--paper);
+}
+.ex__main {
+  position: sticky; top: var(--topbar-h);
+  display: flex; flex-direction: column;
+  height: calc(100vh - var(--topbar-h)); min-width: 0;
+}
+.ex__stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.ex__stage canvas { position: absolute; inset: 0; }
+
+.ex__grip {
+  position: absolute; z-index: 1; left: 16px; top: 16px;
+  padding: 8px 14px; border-radius: 10px;
+  background: var(--ink); color: #fff;
+  font: 700 17px/1.2 var(--font-body);
+}
+.ex__toggle {
+  position: absolute; z-index: 1; right: 16px; bottom: 16px;
+  display: grid; place-items: center;
+  width: 56px; height: 56px; padding: 0;
+  border: 2px solid var(--ink); border-radius: 50%;
+  background: var(--yellow); box-shadow: 0 3px 0 var(--ink);
+  cursor: pointer;
+}
+.ex__toggle:active { transform: translateY(3px); box-shadow: none; }
+.ex__toggle svg { width: 26px; height: 26px; fill: var(--ink); }
+.ex__toggle[data-state="playing"] .ex__ico-play,
+.ex__toggle[data-state="paused"] .ex__ico-pause { display: none; }
+.ex__toggle.is-waiting { right: calc(50% - 44px); bottom: 20px; width: 88px; height: 88px; }
+.ex__toggle.is-waiting svg { width: 44px; height: 44px; }
+
+.ex__time { padding: 12px 16px 14px; border-top: 1px solid var(--line); background: var(--paper); }
+.ex__now { font: 800 26px/1.2 var(--font-body); min-height: 1.2em; }
+.ex__steps { display: flex; gap: 0; margin: 8px 0 0; padding: 0; list-style: none; }
+.ex__steps li { flex: 1 1 0; min-width: 0; }
+.ex__step {
+  --p: 0;
+  position: relative; display: block; width: 100%; padding: 22px 8px 2px 0;
+  border: 0; background: none; color: var(--ink-2);
+  font: 600 14px/1.25 var(--font-body); text-align: left; cursor: pointer;
+}
+/* The rail between stops fills as the step plays. */
+.ex__step::before { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: 4px; background: var(--line); }
+.ex__step::after { content: ""; position: absolute; left: 0; right: 0; top: 7px; height: 4px; background: var(--azure-deep); transform: scaleX(0); transform-origin: left; }
+.ex__step.is-past::after { transform: scaleX(1); }
+.ex__step.is-now::after { transform: scaleX(var(--p)); }
+.ex__step:hover, .ex__step.is-now { color: var(--ink); }
+.ex__step.is-now { font-weight: 800; }
+.ex__step .ex__hole { position: absolute; z-index: 1; left: 0; top: 1px; width: 16px; height: 16px; background: var(--paper); box-shadow: inset 0 0 0 4px var(--line); }
+.ex__step.is-past .ex__hole { box-shadow: inset 0 0 0 4px var(--azure-deep); }
+.ex__step.is-now .ex__hole { background: var(--yellow); box-shadow: inset 0 0 0 3px var(--ink); }
+
+.ex__hole { display: block; flex: none; border-radius: 50%; }
+
+.ex__side {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 10px 16px 12px;
+  border-left: 1px solid var(--line);
+  font-size: clamp(15px, 1.05vw, 19px);
+}
+.ex__head { display: flex; align-items: baseline; gap: 12px; }
+.ex__head h1 { flex: none; font-size: 28px; }
+.ex__head p { color: var(--ink-2); line-height: 1.2; }
+
+/* Same beam as the top nav, standing upright. */
+.ex__list {
+  display: grid; gap: 1px; margin: 0; padding: 5px; list-style: none;
+  border-radius: 23px; background: var(--azure-deep);
+  box-shadow: inset 0 -3px 0 #005a6a;
+}
+.ex__item {
+  display: flex; align-items: center; gap: 10px; width: 100%; min-height: 34px; padding: 4px 14px 4px 6px;
+  border: 0; border-radius: 17px; background: none; color: #fff; text-align: left; cursor: pointer;
+}
+.ex__item:hover { background: rgba(255, 255, 255, 0.14); }
+.ex__item:focus-visible { outline-color: var(--yellow); }
+.ex__item .ex__hole { width: 20px; height: 20px; background: #005a6a; box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.28); }
+.ex__item b { font-size: 16px; font-weight: 700; line-height: 1.15; } /* a long title wraps to two lines on a phone */
+.ex__item em { margin-left: auto; font: 500 13px/1 var(--font-body); font-style: normal; white-space: nowrap; }
+.ex__item.is-seen .ex__hole { background: radial-gradient(circle at 40% 35%, #fff2a8, var(--yellow) 60%); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5); }
+.ex__item.is-current { background: #fff; color: var(--azure-deep); }
+.ex__item.is-current .ex__hole { box-shadow: 0 0 0 2px var(--azure-deep); }
+
+.ex__facts { display: grid; gap: 7px; margin: 0; line-height: 1.3; }
+.ex__facts dt { font-weight: 800; }
+.ex__facts dd { margin: 0; color: var(--ink-2); }
+.ex__levels { display: flex; gap: 3px; margin: 3px 0 4px; }
+.ex__levels span {
+  flex: 1; padding: 3px 0; border-radius: 6px;
+  background: var(--mist); color: var(--ink-2);
+  font: 700 13px/1.2 var(--font-body); text-align: center;
+}
+.ex__levels span.is-on { background: var(--magenta); color: #fff; }
+.ex__common { padding: 10px 12px; border-radius: 10px; background: var(--yellow); line-height: 1.3; }
+.ex__common b { display: block; font-weight: 800; }
+.ex__next { align-self: stretch; margin-top: auto; }
+.ex__stage .no-webgl { right: 88px; }
+
+@media (max-width: 1180px) {
+  .ex__step { padding-top: 16px; font-size: 0; }
+}
+@media (max-width: 860px) {
+  .ex { display: flex; flex-direction: column; min-height: 0; }
+  .ex__main { position: static; height: auto; order: 3; }
+  .ex__side { display: contents; }
+  .ex__head { order: 1; padding: 14px 16px 0; }
+  .ex__list { order: 2; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin: 12px 16px; }
+  .ex__item { padding-right: 8px; gap: 6px; }
+  .ex__item em { display: none; }
+  .ex__step { min-height: 44px; }
+  .ex__stage { flex: none; height: auto; aspect-ratio: 4 / 3; }
+  .ex__now { font-size: 22px; min-height: 2.4em; }
+  .ex__facts { order: 4; padding: 12px 16px 0; }
+  .ex__common { order: 5; margin: 12px 16px 0; }
+  .ex__next { order: 6; margin: 12px 16px 20px; }
+}
+
+/* A projector is short: the list folds in two to save height. The side still scrolls there; the stage is sticky and stays in view. */
+@media (min-width: 861px) and (max-height: 860px) {
+  .ex__list { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .ex__item em { display: none; }
+}

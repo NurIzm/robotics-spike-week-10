@@ -1,0 +1,94 @@
+<div class="prog" id="prog">
+  <section class="prog__left" aria-label="Программа из блоков">
+    <div class="tasks">
+      <div class="tasks__tabs" id="task-tabs"></div>
+      <p class="tasks__goal" id="task-goal"></p>
+      <p class="tasks__hint" id="task-hint" hidden></p>
+      <ol class="tasks__steps" id="task-steps" hidden></ol>
+      <table class="tasks__table" id="task-table" hidden></table>
+      <div class="tasks__row">
+        <p class="tasks__status" id="task-status" role="status"></p>
+        <div class="tasks__acts">
+          <button type="button" class="tasks__act" id="task-hint-btn" aria-expanded="false">Подсказка</button>
+          <button type="button" class="tasks__act" id="task-solution">Показать решение</button>
+          <button type="button" class="tasks__act" id="task-reset">Сбросить стол</button>
+          <button type="button" class="tasks__act" id="task-restart">Начать заново</button>
+        </div>
+      </div>
+    </div>
+    <div class="prog__ws">
+      <div class="prog__blockly" id="prog-blockly"></div>
+      <div class="prog__tools" id="prog-tools">
+        <button type="button" data-tool="fit" aria-label="Показать все блоки" title="Показать все блоки">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l6 6m0-4.5V9H4.5M21 3l-6 6m0-4.5V9h4.5M3 21l6-6m0 4.5V15H4.5M21 21l-6-6m0 4.5V15h4.5"/></svg>
+        </button>
+        <button type="button" data-tool="out" aria-label="Уменьшить" title="Уменьшить">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M6.5 10.5h8M16 16l5.5 5.5"/></svg>
+        </button>
+        <button type="button" data-tool="in" aria-label="Увеличить" title="Увеличить">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="7.5"/><path d="M6.5 10.5h8M10.5 6.5v8M16 16l5.5 5.5"/></svg>
+        </button>
+        <span class="prog__toolgap"></span>
+        <button type="button" data-tool="undo" aria-label="Отменить" title="Отменить">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5 4 9.5 8.5 14M4.5 9.5H15a5.5 5.5 0 0 1 0 11h-3"/></svg>
+        </button>
+        <button type="button" data-tool="redo" aria-label="Вернуть" title="Вернуть">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5 20 9.5 15.5 14M19.5 9.5H9a5.5 5.5 0 0 0 0 11h3"/></svg>
+        </button>
+      </div>
+      <div class="prog__run">
+        <button type="button" class="prog__round prog__round--stop" id="prog-stop" aria-label="Остановить программу" title="Остановить">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
+        </button>
+        <button type="button" class="prog__round prog__round--play" id="prog-play" aria-label="Запустить программу" title="Запустить">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.2v15.6a1 1 0 0 0 1.5.86l12.4-7.8a1 1 0 0 0 0-1.72L8.5 3.34A1 1 0 0 0 7 4.2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="prog__split" id="prog-split" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Граница между блоками и моделью. Стрелки влево и вправо двигают её."></div>
+
+  <section class="prog__right" aria-label="Модель">
+    <div class="prog__stage" id="prog-stage">
+      <div class="swap" role="group" aria-label="Какой захват стоит на устройстве">
+        <button type="button" data-grabber="1" aria-pressed="false">Захват 1</button>
+        <button type="button" data-grabber="2" aria-pressed="true">Захват 2</button>
+      </div>
+      <div class="pad" id="prog-pad" role="group" aria-label="Двигать захват">
+        <button type="button" data-move="-z" class="pad__up" aria-label="Дальше"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5 5 16h14z"/></svg></button>
+        <button type="button" data-move="-x" class="pad__left" aria-label="Влево"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12 16 5v14z"/></svg></button>
+        <button type="button" data-move="+z" class="pad__down" aria-label="Ближе"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19 5 8h14z"/></svg></button>
+        <button type="button" data-move="+x" class="pad__right" aria-label="Вправо"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12 8 5v14z"/></svg></button>
+        <button type="button" data-move="+y" class="pad__lift" aria-label="Поднять захват">Выше</button>
+        <button type="button" data-move="-y" class="pad__drop" aria-label="Опустить захват">Ниже</button>
+      </div>
+    </div>
+    <div class="hubp">
+      <div class="hubp__hub">
+        <div class="hubp__leds" id="hub-leds" role="img" aria-label="Экран хаба, 5 на 5 огней"></div>
+        <div class="hubp__pill">
+          <button type="button" id="hub-left" aria-label="Левая кнопка хаба"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 12l9-6v12z"/></svg></button>
+          <button type="button" id="hub-center" class="hubp__center" aria-label="Центральная кнопка: запуск и остановка"></button>
+          <button type="button" id="hub-right" aria-label="Правая кнопка хаба"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 12 8 6v12z"/></svg></button>
+        </div>
+      </div>
+      <div class="force">
+        <button type="button" class="force__wheel" id="force-btn" aria-label="Датчик силы, порт E. Нажми и держи: у верхнего края слабо, у нижнего 10 ньютонов. Пробел нажимает на 4 ньютона, Shift и пробел на 9."><span class="force__cap"></span></button>
+        <p class="force__read"><b id="force-n">0,0</b> Н · <b id="force-pct">0</b> %</p>
+        <p class="force__state" id="force-state">отпущена</p>
+      </div>
+      <div class="hubp__side">
+        <div class="hubp__port">
+          <p>Порт A</p>
+          <dl>
+            <dt>Угол</dt><dd><b id="read-angle">0</b> °</dd>
+            <dt>Скорость</dt><dd><b id="read-speed">0</b> %</dd>
+            <dt>Мощность</dt><dd><b id="read-power">0</b> %</dd>
+          </dl>
+        </div>
+        <p class="hubp__keys">Захват несёшь ты: <kbd>стрелки</kbd> или <kbd>WASD</kbd>, <kbd>Q</kbd> и <kbd>E</kbd> выше и ниже, или тяни модель мышью. Датчик: колесо, <kbd>Пробел</kbd> 4&nbsp;Н, <kbd>Shift</kbd>+<kbd>Пробел</kbd> 9&nbsp;Н.</p>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>VM check</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/blocks.css">
+<style>
+  body { padding: 16px; font: 15px/1.5 Consolas, monospace; background: #fff; }
+  h1 { font: 700 20px Arial, sans-serif; margin-bottom: 8px; }
+  #out div { white-space: pre-wrap; }
+  .pass { color: #00703c; } .fail { color: #c2410c; font-weight: 700; }
+  /* The VM needs a live workspace, but nobody has to look at it. */
+  #w { position: fixed; left: -3000px; top: 0; width: 1000px; height: 700px; }
+</style>
+</head>
+<body>
+<h1 id="sum">Идёт проверка…</h1>
+<div id="out"></div>
+<div id="w"></div>
+<div id="toasts" class="toasts"></div>
+<script src="../vendor/blockly/blockly_compressed_vertical.js"></script>
+<script src="../vendor/blockly/blocks_compressed.js"></script>
+<script src="../vendor/blockly/blocks_compressed_vertical.js"></script>
+<script src="../vendor/blockly/messages.js"></script>
+<script src="../vendor/blockly/msg_ru.js"></script>
+<script src="../js/core.js"></script>
+<script src="../js/blocks.js"></script>
+<script src="../js/vm.js"></script>
+<script>
+// Runs the VM against a mock hw and prints one line per check.
+(async function () {
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const calls = [];
+  const seen = (name) => calls.filter((c) => c[0] === name);
+  const did = (name, ...args) => calls.some((c) => c[0] === name && JSON.stringify(c.slice(1)) === JSON.stringify(args));
+  const rec = (name, ret) => (...args) => { calls.push([name, ...args]); return ret; };
+  const later = (name) => (...args) => { calls.push([name, ...args]); return sleep(10); };
+  const state = { button: false, tilted: false, gesture: false, force: 0 };
+
+  const hw = {
+    ports: { A: 'motor', B: null, C: null, D: null, E: 'force', F: null },
+    motor: {
+      run: rec('run'), runPower: rec('runPower'), stop: rec('motor.stop'), runFor: later('runFor'),
+      runForSeconds: later('runForSeconds'), goTo: later('goTo'),
+      position: 42, relative: 7, speedPct: 55, powerPct: -100, defaultSpeed: 75,
+    },
+    display: { setImage: rec('setImage'), clear: rec('clear'), setPixel: rec('setPixel'), setBrightness: rec('setBrightness'),
+      rotate: rec('rotate'), setOrientation: rec('setOrientation'), scroll: later('scroll') },
+    centerLight: rec('centerLight'),
+    sound: { beep: later('beep'), beepStart: rec('beepStart'), stop: rec('sound.stop'), play: later('play'), volume: 100,
+      setEffect: rec('setEffect'), changeEffect: rec('changeEffect'), clearEffects: rec('clearEffects') },
+    sensors: { force: () => state.force, button: () => state.button, tilted: () => state.tilted, orientationUp: (n) => n === 'top', gesture: () => state.gesture,
+      angle: (a) => (a === 'yaw' ? 15 : 0), resetYaw: rec('resetYaw') },
+    onEvent() {},
+    reset: rec('reset'),
+  };
+
+  const toasts = [];
+  RA.toast = (text, kind) => toasts.push([text, kind]);
+
+  const bl = RA.createBlocks(RA.$('#w'), { media: '../vendor/media/' });
+  const states = [];
+  const vm = RA.createVM(bl.workspace, hw, { onState: (on) => states.push(on) });
+
+  let good = 0, bad = 0;
+  const line = (ok, name, why) => {
+    ok ? good++ : bad++;
+    const el = document.createElement('div');
+    el.className = ok ? 'pass' : 'fail';
+    el.textContent = (ok ? 'PASS  ' : 'FAIL  ') + name + (ok || !why ? '' : '  → ' + why);
+    RA.$('#out').append(el);
+    console.log(el.textContent);
+  };
+  const check = (name, ok, why) => line(!!ok, name, why === undefined ? JSON.stringify(calls.slice(-6)) : why);
+
+  // Small XML kit.
+  const v = (name, shadow) => `<value name="${name}">${shadow}</value>`;
+  const number = (name, n) => v(name, `<shadow type="math_number"><field name="NUM">${n}</field></shadow>`);
+  const text = (name, s) => v(name, `<shadow type="text"><field name="TEXT">${s}</field></shadow>`);
+  const port = (p) => v('PORT', `<shadow type="flippermotor_multiple-port-selector"><field name="field_flippermotor_multiple-port-selector">${p}</field></shadow>`);
+  const b = (type, inner) => ({ type, inner: inner || '' });
+  // Next-linked chain of blocks.
+  const chain = (...list) => list.reduceRight((next, x) => `<block type="${x.type}">${x.inner}${next ? `<next>${next}</next>` : ''}</block>`, '');
+  const stack = (...list) => `<statement name="SUBSTACK">${chain(...list)}</statement>`;
+  const inner = (x) => `<block type="${x.type}">${x.inner}</block>`;
+  const start = (...list) => chain(b('flipperevents_whenProgramStarts'), ...list).replace('<block', '<block x="20" y="20"');
+  const decl = '<variables><variable type="" id="vx">x</variable><variable type="list" id="vl">l</variable><variable type="broadcast_msg" id="mg">go</variable></variables>';
+  const xv = '<field name="VARIABLE" id="vx" variabletype="">x</field>';
+  const xl = '<field name="LIST" id="vl" variabletype="list">l</field>';
+  const msg = '<field name="BROADCAST_OPTION" id="mg" variabletype="broadcast_msg">go</field>';
+  const say = (x) => b('flipperlight_lightDisplayText', `<value name="TEXT">${inner(x)}</value>`);
+  const says = () => seen('scroll').map((c) => c[1]);
+  const finished = async (ms) => { const end = Date.now() + (ms || 1500); while (vm.running && Date.now() < end) await sleep(10); };
+
+  const load = (xml) => { vm.stop(); bl.load(`<xml>${decl}${xml}</xml>`); calls.length = 0; toasts.length = 0; states.length = 0; };
+  // Runs a program to its natural end.
+  const run = async (xml) => { load(xml); vm.start(); await finished(); };
+
+  // Task 1 program: the sensor in E works the claw on A.
+  bl.load(RA.STARTER_XML);
+  check('starter: one stack, motor A, sensor E', bl.workspace.getTopBlocks(false).length === 1 && bl.save().includes('>A<') && bl.save().includes('>E<'), bl.save().slice(0, 80));
+  vm.stop(); calls.length = 0; state.force = 0;
+  vm.start();
+  await sleep(60);
+  check('starter: opens to 25 by the shortest path', did('goTo', 25, 'shortest', 75));
+  check('starter: stays running, it waits for the sensor', vm.running, 'running=' + vm.running);
+  calls.length = 0;
+  state.force = 4;
+  await sleep(120);
+  check('starter: a press closes to 345 counterclockwise', did('goTo', 345, 'counterclockwise', 75));
+  calls.length = 0;
+  state.force = 0;
+  await sleep(150);
+  check('starter: release does nothing, the block is missing', !seen('goTo').length);
+  vm.stop();
+  bl.load(RA.SOLUTION_XML);
+  vm.start();
+  await sleep(60);
+  calls.length = 0;
+  state.force = 4;
+  await sleep(120);
+  state.force = 0;
+  await sleep(150);
+  check('solution: press closes, release opens', did('goTo', 345, 'counterclockwise', 75) && did('goTo', 25, 'shortest', 75));
+  vm.stop();
+  check('solution: stop() ends the run and resets hw', !vm.running && seen('reset').length > 0 && seen('motor.stop').length > 0 && seen('sound.stop').length > 0);
+  calls.length = 0;
+  state.force = 4;
+  await sleep(100);
+  state.force = 0;
+  check('the sensor is ignored after stop', !seen('goTo').length);
+
+  // Forever without wait.
+  load(start(b('control_forever', stack(b('flipperlight_lightDisplayOff')))));
+  vm.start();
+  const t0 = performance.now();
+  let beats = 0;
+  while (performance.now() - t0 < 300) { await new Promise((r) => setTimeout(r, 0)); beats++; }
+  const spins = seen('clear').length;
+  check('forever: page keeps running', beats > 10, 'timers fired ' + beats);
+  check('forever: the loop really spins', spins > 50, 'iterations ' + spins);
+  check('forever: still running', vm.running, 'running=false');
+  vm.stop();
+  await sleep(20);
+  const after = seen('clear').length;
+  await sleep(100);
+  check('forever: stop() ends it', seen('clear').length === after && !vm.running, `${after} then ${seen('clear').length}`);
+
+  // Empty forever loop must not spin the page to death either.
+  load(start(b('control_forever')));
+  vm.start();
+  const t1 = performance.now();
+  await sleep(50);
+  check('forever: empty body does not freeze', performance.now() - t1 < 400, 'blocked ' + Math.round(performance.now() - t1) + ' ms');
+  vm.stop();
+
+  // Repeat.
+  await run(start(b('control_repeat', v('TIMES', '<shadow type="math_whole_number"><field name="NUM">3</field></shadow>') + stack(b('flipperlight_lightDisplayOff')))));
+  check('repeat: 3 times', seen('clear').length === 3, 'clear ' + seen('clear').length);
+  check('natural end: running falls back to false', !vm.running && states.join() === 'true,false', states.join());
+
+  // If / else.
+  const tf = (lhs, rhs, then, other) => b('control_if_else',
+    `<value name="CONDITION"><block type="operator_lt">${text('OPERAND1', lhs)}${text('OPERAND2', rhs)}</block></value>`
+    + `<statement name="SUBSTACK">${inner(say2(then))}</statement><statement name="SUBSTACK2">${inner(say2(other))}</statement>`);
+  const say2 = (s) => b('flipperlight_lightDisplayText', text('TEXT', s));
+  await run(start(tf('1', '2', 'yes', 'no')));
+  check('if/else: true branch', says().join() === 'yes', says().join());
+  await run(start(tf('2', '1', 'yes', 'no')));
+  check('if/else: false branch', says().join() === 'no', says().join());
+  await run(start(b('control_if', `<value name="CONDITION"><block type="operator_gt">${text('OPERAND1', '9')}${text('OPERAND2', '10')}</block></value>${stack(say2('never'))}`), say2('after')));
+  check('if: numbers compare as numbers', says().join() === 'after', says().join());
+
+  // Wait.
+  const w0 = performance.now();
+  await run(start(b('control_wait', v('DURATION', '<shadow type="math_positive_number"><field name="NUM">0.1</field></shadow>')), b('flipperlight_lightDisplayOff')));
+  const waited = performance.now() - w0;
+  check('wait: 0.1 s takes that long', waited >= 95 && waited < 600 && seen('clear').length === 1, Math.round(waited) + ' ms');
+  load(start(b('control_wait', v('DURATION', '<shadow type="math_positive_number"><field name="NUM">5</field></shadow>')), b('flipperlight_lightDisplayOff')));
+  vm.start();
+  await sleep(30);
+  vm.stop();
+  await sleep(30);
+  check('wait: stop() cancels a long wait', !vm.running && !seen('clear').length);
+  load(start(b('control_wait_until', `<value name="CONDITION">${inner(b('flippersensors_buttonIsPressed', '<field name="BUTTON">left</field><field name="EVENT">pressed</field>'))}</value>`), say2('go')));
+  state.button = false;
+  vm.start();
+  await sleep(120);
+  const early = says().length;
+  state.button = true;
+  await finished();
+  state.button = false;
+  check('wait until: waits, then continues', early === 0 && says().join() === 'go', `${early} ${says().join()}`);
+  await run(start(
+    b('data_setvariableto', xv + text('VALUE', '0')),
+    b('control_repeat_until', `<value name="CONDITION"><block type="operator_equals"><value name="OPERAND1"><block type="data_variable">${xv}</block></value>${text('OPERAND2', '4')}</block></value>`
+      + stack(b('data_changevariableby', xv + number('VALUE', 1)))),
+    say(b('data_variable', xv))));
+  check('repeat until + variable', says().join() === '4', says().join());
+
+  // Variables and lists.
+  await run(start(b('data_setvariableto', xv + text('VALUE', '5')), b('data_changevariableby', xv + number('VALUE', 2)), say(b('data_variable', xv))));
+  check('variable: set and change', says().join() === '7', says().join());
+  await run(start(say(b('data_variable', xv))));
+  check('variable: starts from 0 on every run', says().join() === '0', says().join());
+  await run(start(
+    b('data_addtolist', xl + text('ITEM', 'a')), b('data_addtolist', xl + text('ITEM', 'b')),
+    b('data_insertatlist', xl + number('INDEX', 2) + text('ITEM', 'c')),
+    b('data_replaceitemoflist', xl + number('INDEX', 1) + text('ITEM', 'z')),
+    say(b('data_listcontents', xl)), say(b('data_lengthoflist', xl)),
+    say(b('data_itemoflist', xl + number('INDEX', 2))), say(b('data_itemnumoflist', xl + text('ITEM', 'b'))),
+    say(b('data_listcontainsitem', xl + text('ITEM', 'q'))),
+    b('data_deleteoflist', xl + number('INDEX', 1)), say(b('data_listcontents', xl)),
+    b('data_deletealloflist', xl), say(b('data_lengthoflist', xl))));
+  check('lists: all operations', says().join('|') === 'z c b|3|c|3|false|c b|0', says().join('|'));
+
+  // Broadcast.
+  await run(start(say2('a'), b('event_broadcast', `<value name="BROADCAST_INPUT"><shadow type="event_broadcast_menu">${msg}</shadow></value>`), say2('b'))
+    + chain(b('event_whenbroadcastreceived', msg), say2('heard')).replace('<block', '<block x="20" y="300"'));
+  check('broadcast: reaches the hat', says().sort().join() === 'a,b,heard', says().join());
+  await run(start(b('event_broadcastandwait', `<value name="BROADCAST_INPUT"><shadow type="event_broadcast_menu">${msg}</shadow></value>`), say2('after'))
+    + chain(b('event_whenbroadcastreceived', msg), say2('one'), say2('two')).replace('<block', '<block x="20" y="300"'));
+  check('broadcast and wait: waits for the hat', says().join() === 'one,two,after', says().join());
+
+  // My block.
+  const proto = '<mutation proccode="сжать" argumentids="[]" argumentnames="[]" argumentdefaults="[]" warp="false"></mutation>';
+  await run(start(say2('before'), b('procedures_call', '<mutation proccode="сжать" argumentids="[]" warp="false"></mutation>'), say2('after'))
+    + chain(b('procedures_definition', `<statement name="custom_block"><shadow type="procedures_prototype">${proto}</shadow></statement>`), say2('body')).replace('<block', '<block x="20" y="300"'));
+  check('my block: call runs the definition', says().join() === 'before,body,after', says().join());
+
+  const call = b('procedures_call', '<mutation proccode="сжать" argumentids="[]" warp="false"></mutation>');
+  await run(start(call, say2('never'))
+    + chain(b('procedures_definition', `<statement name="custom_block"><shadow type="procedures_prototype">${proto}</shadow></statement>`), call).replace('<block', '<block x="20" y="300"'));
+  check('my block: endless self-call stops with a note', !vm.running && !says().length && toasts.length === 1, JSON.stringify(toasts));
+
+  // Operators, each reporter through the hub text.
+  const op = (type, inner2) => say(b(type, inner2));
+  const two = (a, c) => number('NUM1', a) + number('NUM2', c);
+  const math = (o, n) => op('operator_mathop', `<field name="OPERATOR">${o}</field>${number('NUM', n)}`);
+  const cases = [
+    [op('operator_add', two(2, 3)), '5'], [op('operator_subtract', two(2, 3)), '-1'], [op('operator_multiply', two(2, 3)), '6'],
+    [op('operator_divide', two(3, 2)), '1.5'], [op('operator_mod', two(-1, 4)), '3'], [op('operator_round', number('NUM', 2.5)), '3'],
+    [math('abs', -4), '4'], [math('floor', 1.7), '1'], [math('ceiling', 1.2), '2'], [math('sqrt', 9), '3'], [math('sin', 90), '1'], [math('cos', 180), '-1'],
+    [op('operator_join', text('STRING1', 'ab') + text('STRING2', 'cd')), 'abcd'], [op('operator_letter_of', number('LETTER', 2) + text('STRING', 'abc')), 'b'],
+    [op('operator_length', text('STRING', 'hello')), '5'], [op('operator_contains', text('STRING1', 'Apple') + text('STRING2', 'pp')), 'true'],
+    [op('operator_equals', text('OPERAND1', 'ДА') + text('OPERAND2', 'да')), 'true'], [op('operator_gt', text('OPERAND1', '10') + text('OPERAND2', '9')), 'true'],
+    [op('flipperoperator_isInBetween', number('VALUE', 5) + number('LOW', -10) + number('HIGH', 10)), 'true'],
+    [op('flipperoperator_isInBetween', number('VALUE', 11) + number('LOW', -10) + number('HIGH', 10)), 'false'],
+    [op('operator_not', ''), 'true'],
+    [op('operator_and', `<value name="OPERAND1"><block type="operator_not"></block></value><value name="OPERAND2"><block type="operator_not"></block></value>`), 'true'],
+    [op('operator_or', ''), 'false'],
+  ];
+  await run(start(...cases.map((c) => c[0])));
+  const want = cases.map((c) => c[1]).join();
+  check('operators: ' + cases.length + ' reporters', says().join() === want, says().join() + ' ≠ ' + want);
+  await run(start(op('operator_random', number('FROM', 3) + number('TO', 3))));
+  check('operators: random', says().join() === '3', says().join());
+
+  // Wrong ports and missing devices.
+  const atF = b('flippermotor_motorStartDirection', port('F') + '<field name="DIRECTION">clockwise</field>');
+  await run(start(atF, atF, say2('still here')));
+  check('empty port: friendly warning', toasts.length === 1 && toasts[0][0] === 'В порту F ничего нет. Мотор захвата подключён к порту A.' && toasts[0][1] === 'warn', JSON.stringify(toasts));
+  check('empty port: no motor call, program goes on', !seen('run').length && says().join() === 'still here');
+  await run(start(atF));
+  check('empty port: warns again on the next run', toasts.length === 1, JSON.stringify(toasts));
+  await run(start(b('flippermotor_motorStop', port('E'))));
+  check('motor block on the sensor port: says what is there', toasts[0] && toasts[0][0] === 'В порту E датчик силы, а не мотор. Мотор захвата подключён к порту A.', JSON.stringify(toasts));
+  await run(start(b('flippermove_move', '<field name="DIRECTION">forward</field><field name="UNIT">cm</field>' + number('VALUE', 10)), say2('ok')));
+  check('movement: skipped with a note', toasts[0] && toasts[0][0] === 'У этой модели нет ходовых моторов: блок пропущен.' && says().join() === 'ok', JSON.stringify(toasts));
+  state.force = 5;
+  await run(start(say(b('flippersensors_color', port('E'))), say(b('flippersensors_isPressed', port('A') + '<field name="OPTION">pressed</field>'))));
+  state.force = 0;
+  check('sensors: no such sensor gives 0, force on A gives false', says().join() === '0,false'
+    && toasts.map((x) => x[0]).join('|') === 'У этой модели нет такого датчика.|В порту A нет датчика силы. Датчик силы подключён к порту E.', says().join() + JSON.stringify(toasts));
+
+  // The force sensor in E: newtons, percent and its three states. Touch counts from 0.6 Н, hard from 7 Н.
+  const portE = port('E');
+  const force = (unit) => say(b('flippersensors_force', portE + `<field name="UNIT">${unit}</field>`));
+  const isP = (what) => say(b('flippersensors_isPressed', portE + `<field name="OPTION">${what}</field>`));
+  state.force = 4.2;
+  await run(start(force('newton'), force('percent'), isP('pressed'), isP('hardpressed'), isP('released')));
+  check('force: Н, %, pressed, not hard, not released', says().join() === '4.2,42,true,false,false', says().join());
+  state.force = 0.5;
+  await run(start(isP('pressed'), isP('released')));
+  const light = says().join();
+  state.force = 0.6;
+  await run(start(isP('pressed'), isP('released')));
+  check('force: touch counts from 0.6 Н', light === 'false,true' && says().join() === 'true,false', light + ' ' + says().join());
+  state.force = 6.9;
+  await run(start(isP('hardpressed')));
+  const soft = says().join();
+  state.force = 7;
+  await run(start(isP('hardpressed')));
+  check('force: hard from 7 Н', soft === 'false' && says().join() === 'true', soft + ' ' + says().join());
+  // The same block read twice: it remembers what it saw the last time.
+  const twice = (x) => start(b('control_repeat', v('TIMES', '<shadow type="math_whole_number"><field name="NUM">2</field></shadow>') + stack(b('control_wait', number('DURATION', 0.1)), x)));
+  state.force = 2;
+  await run(twice(isP('changed')));
+  const still = says().join();
+  load(twice(isP('changed')));
+  vm.start();
+  await sleep(150);
+  state.force = 3;
+  await finished();
+  check('force: «давление изменилось» sees a change', still === 'false,false' && says().join() === 'false,true', still + ' ' + says().join());
+  state.force = 0;
+
+  // The force hat fires on edges only.
+  const when = (what, p) => chain(b('flipperevents_whenPressed', port(p || 'E') + `<field name="OPTION">${what}</field>`), say2(what)).replace('<block', '<block x="20" y="20"');
+  load(when('pressed'));
+  vm.start();
+  await sleep(90);
+  const idle = says().length;
+  state.force = 4; await sleep(120);
+  state.force = 5; await sleep(120);
+  state.force = 0; await sleep(90);
+  state.force = 4; await sleep(120);
+  check('hat: «нажата» fires once per press', idle === 0 && says().length === 2, idle + ' ' + says().join());
+  vm.stop();
+  state.force = 0;
+  load(when('released'));
+  vm.start();
+  await sleep(90);
+  const atStart = says().length;
+  state.force = 4; await sleep(90);
+  state.force = 0; await sleep(120);
+  check('hat: «отпущена» waits for a real release', atStart === 0 && says().join() === 'released', atStart + ' ' + says().join());
+  vm.stop();
+  load(when('hardpressed'));
+  vm.start();
+  await sleep(60);
+  state.force = 4; await sleep(90);
+  const notHard = says().length;
+  state.force = 9; await sleep(120);
+  check('hat: «сильно нажата» only above 7 Н', notHard === 0 && says().join() === 'hardpressed', notHard + ' ' + says().join());
+  vm.stop();
+  state.force = 0;
+  load(when('changed'));
+  vm.start();
+  await sleep(90);
+  state.force = 2; await sleep(90);
+  state.force = 3; await sleep(90);
+  check('hat: «давление изменилось» fires on each change', says().length === 2, says().join());
+  vm.stop();
+  state.force = 0;
+  load(when('pressed', 'A'));
+  vm.start();
+  await sleep(60);
+  check('hat: force hat on the wrong port warns once', toasts.length === 1 && toasts[0][0] === 'В порту A нет датчика силы. Датчик силы подключён к порту E.', JSON.stringify(toasts));
+  vm.stop();
+
+  // Motors, display and sound reach the hardware.
+  const portF = port('A');
+  await run(start(
+    b('flippermotor_motorSetSpeed', portF + number('SPEED', 40)),
+    b('flippermotor_motorTurnForDirection', portF + '<field name="DIRECTION">counterclockwise</field><field name="UNIT">degrees</field>' + number('VALUE', 90)),
+    b('flippermotor_motorTurnForDirection', portF + '<field name="DIRECTION">clockwise</field><field name="UNIT">rotations</field>' + number('VALUE', 2)),
+    b('flippermotor_motorGoDirectionToPosition', portF + '<field name="DIRECTION">shortest</field>' + number('POSITION', 30)),
+    b('flippermotor_motorStartDirection', portF + '<field name="DIRECTION">counterclockwise</field>'),
+    b('flippermotor_motorStop', portF),
+    b('flippermoremotor_motorSetDegreeCounted', portF + number('VALUE', 0)),
+    say(b('flippermotor_absolutePosition', portF)), say(b('flippermotor_speed', portF)), say(b('flippermoremotor_power', portF)), say(b('flippermoremotor_position', portF))));
+  check('motor: speed and all moves', did('runFor', -90, 40) && did('runFor', 720, 40) && did('goTo', 30, 'shortest', 40) && did('run', 40, -1));
+  check('motor: reporters', says().join() === '42,55,-100,0', says().join());
+  const matrix = 'flipperlight_lightDisplayImageOnForTime';
+  await run(start(
+    b(matrix, v('MATRIX', '<shadow type="matrix"><field name="MATRIX">1000000000000000000000001</field></shadow>') + number('VALUE', 0.02)),
+    b('flipperlight_lightDisplaySetBrightness', number('BRIGHTNESS', 50)),
+    b('flipperlight_lightDisplaySetPixel', number('X', 2) + number('Y', 3) + number('BRIGHTNESS', 100)),
+    b('flipperlight_lightDisplayRotate', '<field name="DIRECTION">counterclockwise</field>'),
+    b('flipperlight_centerButtonLight', v('COLOR', '<shadow type="flipperlight_colour-selector"><field name="field_flipperlight_colour-selector">#00C040</field></shadow>')),
+    b('flippersound_beepForTime', v('NOTE', '<shadow type="note"><field name="NOTE">72</field></shadow>') + number('DURATION', 0.01)),
+    b('flippersound_playSoundUntilDone', v('SOUND', '<shadow type="flippersounds_sound-selector"><field name="field_flippersounds_sound-selector">Laser</field></shadow>')),
+    b('sound_setvolumeto', number('VOLUME', 60)), b('sound_changevolumeby', number('VOLUME', -10)), say(b('sound_volume')),
+    b('sound_seteffectto', '<field name="EFFECT">PITCH</field>' + number('VALUE', 100))));
+  const img = seen('setImage')[0];
+  check('display: picture, 25 values, then clear', img && img[1].length === 25 && img[1][0] === 100 && img[1][1] === 0 && seen('clear').length === 1);
+  check('display: pixel, brightness, rotate, centre light', did('setPixel', 2, 3, 100) && did('setBrightness', 50) && did('rotate', -1) && did('centerLight', '#00C040'));
+  check('sound: beep, sound, volume, effect', did('beep', 72, 0.01) && did('play', 'Laser', true) && says().join() === '50' && did('setEffect', 'pitch', 100));
+  hw.sound.volume = 100;
+
+  // Timer and hats nothing announces.
+  await run(start(b('control_wait', v('DURATION', '<shadow type="math_positive_number"><field name="NUM">0.05</field></shadow>')),
+    say(b('operator_gt', `<value name="OPERAND1">${inner(b('flippersensors_timer'))}</value>${text('OPERAND2', '0.04')}`)),
+    b('flippersensors_resetTimer'),
+    say(b('operator_lt', `<value name="OPERAND1">${inner(b('flippersensors_timer'))}</value>${text('OPERAND2', '0.04')}`))));
+  check('timer: counts and resets', says().join() === 'true,true', says().join());
+  load(chain(b('flipperevents_whenTimer', number('VALUE', 0.1)), say2('time')).replace('<block', '<block x="20" y="20"'));
+  vm.start();
+  await sleep(50);
+  const none = says().length;
+  await sleep(200);
+  check('hat: timer fires once', none === 0 && says().join() === 'time', `${none} ${says().join()}`);
+  check('hat: a listening program keeps running', vm.running, 'stopped');
+  vm.stop();
+  load(chain(b('flipperevents_whenTilted', v('VALUE', '<shadow type="flipperevents_tilt-selector"><field name="field_flipperevents_tilt-selector">left</field></shadow>')), say2('tilt')).replace('<block', '<block x="20" y="20"'));
+  state.tilted = false;
+  vm.start();
+  await sleep(90);
+  state.tilted = true;
+  await sleep(120);
+  state.tilted = false;
+  await sleep(90);
+  state.tilted = true;
+  await sleep(120);
+  state.tilted = false;
+  check('hat: tilt fires on each rising edge', says().length === 2, says().join());
+  vm.stop();
+  load(chain(b('flipperevents_whenGesture', '<field name="EVENT">shake</field>'), say2('shook')).replace('<block', '<block x="20" y="20"'));
+  vm.start();
+  await sleep(50);
+  state.gesture = true;
+  vm.dispatch({ type: 'gesture', name: 'shake' });
+  await sleep(120);
+  state.gesture = false;
+  check('hat: gesture fires once for one shake', says().length === 1, says().join());
+  vm.stop();
+  load(chain(b('flipperevents_whenCondition', `<value name="CONDITION">${inner(b('flippersensors_isorientation', '<field name="VALUE">top</field>'))}</value>`), say2('up')).replace('<block', '<block x="20" y="20"'));
+  vm.start();
+  await sleep(100);
+  check('hat: condition fires once while true', says().length === 1, says().join());
+  vm.stop();
+
+  // A re-triggered hat starts over, and stop options.
+  load(chain(b('flipperevents_whenButton', '<field name="BUTTON">left</field><field name="EVENT">pressed</field>'), say2('in'),
+    b('control_wait', number('DURATION', 0.2)), say2('out')).replace('<block', '<block x="20" y="20"'));
+  vm.start();
+  vm.dispatch({ type: 'button', side: 'left', state: 'pressed' });
+  await sleep(60);
+  vm.dispatch({ type: 'button', side: 'left', state: 'pressed' });
+  await sleep(60);
+  check('hat: re-trigger restarts the stack', says().join() === 'in,in', says().join());
+  await sleep(220);
+  check('hat: only the new run finishes', says().join() === 'in,in,out', says().join());
+  vm.stop();
+  await run(start(say2('a'), b('flippercontrol_stop', '<field name="STOP_OPTION">exit</field>'), say2('b')));
+  check('stop: exit ends the program', !vm.running && says().join() === 'a' && seen('reset').length > 0, says().join());
+  await run(start(say2('a'), b('flippercontrol_stop', '<field name="STOP_OPTION">this</field>'), say2('b')));
+  check('stop: this stack', !vm.running && says().join() === 'a', says().join());
+  await run(start(b('control_wait', number('DURATION', 0.05)), b('flippercontrol_stopOtherStacks'), say2('winner'))
+    + chain(b('flipperevents_whenProgramStarts'), b('control_forever', stack(b('flipperlight_lightDisplayOff')))).replace('<block', '<block x="20" y="300"'));
+  check('stop: other stacks', !vm.running && says().join() === 'winner', says().join());
+
+  // Every block of the palette runs with its default values without an error.
+  bl.workspace.clear();
+  const failures = [];
+  const logError2 = console.error;
+  console.error = (e) => failures.push(String(e));
+  const palette = bl.workspace.toolbox_.flyout_.workspace_.getTopBlocks(true);
+  for (const p of palette) {
+    const xml = Blockly.Xml.domToText(Blockly.Xml.blockToDom(p)).replace(/ xmlns="[^"]*"/, '').replace(/ id="[^"]*"/g, '');
+    const program = p.outputConnection ? start({ type: 'flipperlight_lightDisplayText', inner: `<value name="TEXT">${xml}</value>` })
+      : p.previousConnection ? start({ type: 'control_if', inner: '' }).replace('</block></next>', `<next>${xml}</next></block></next>`)
+      : xml.replace('<block', '<block x="20" y="20"');
+    load(program);
+    vm.start();
+    await sleep(p.previousConnection ? 25 : 12);
+    vm.stop();
+  }
+  console.error = logError2;
+  check(`palette: all ${palette.length} blocks run`, palette.length > 95 && !failures.length, palette.length + ' ' + failures.join(' | '));
+
+  load('');
+  vm.start();
+  check('empty workspace: says so and does not run', !vm.running && toasts.length === 1, JSON.stringify(toasts));
+
+  // Edits while running must not crash.
+  load(start(b('control_forever', stack(b('flipperlight_lightDisplayOff')))));
+  vm.start();
+  await sleep(30);
+  const errors = [];
+  const logError = console.error;
+  console.error = (e) => errors.push(e);
+  bl.workspace.getTopBlocks(false)[0].dispose(false, false);
+  await sleep(30);
+  const left = seen('clear').length;
+  await sleep(80);
+  console.error = logError;
+  check('deleting a running stack ends it quietly', !errors.length && seen('clear').length === left && !vm.running, `${errors} ${left} ${seen('clear').length}`);
+  vm.stop();
+
+  RA.$('#sum').textContent = bad ? `FAIL: ${bad} из ${good + bad}` : `PASS: все ${good} проверок`;
+  document.title = bad ? 'FAIL' : 'PASS';
+  console.log(RA.$('#sum').textContent);
+})().catch((e) => {
+  document.title = 'FAIL';
+  RA.$('#sum').textContent = 'FAIL: ' + e.message;
+  console.error(e);
+});
+</script>
+</body>
+</html>

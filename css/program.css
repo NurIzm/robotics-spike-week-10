@@ -1,0 +1,184 @@
+/* Program view: blocks left, working model right, like the SPIKE app with the model where its stage would be. */
+.prog {
+  --split: 58%;
+  --palette: 338px;
+  display: grid;
+  grid-template-columns: minmax(0, var(--split)) 10px minmax(0, 1fr);
+  height: calc(100vh - var(--topbar-h));
+  height: calc(100dvh - var(--topbar-h));
+  overflow: hidden;
+  background: var(--paper);
+}
+.prog__left { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.prog__right { display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--mist); }
+
+/* The task bar. Pins as in the top beam: a solved task gets its yellow pin. */
+.tasks { container: tasks / inline-size; padding: 8px 12px 8px; border-bottom: 1px solid var(--line); display: grid; gap: 6px; background: var(--paper); }
+.tasks__tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 3px; border-radius: 20px; background: var(--mist); }
+.tasks__tab {
+  display: flex; align-items: center; gap: 7px; min-width: 0; height: 32px; padding: 0 10px 0 6px;
+  border: 0; border-radius: 16px; background: transparent; color: var(--ink-2);
+  font-weight: 700; font-size: 14px; cursor: pointer;
+}
+.tasks__tab:hover { background: #fff; color: var(--ink); }
+.tasks__tab[aria-pressed="true"] { background: var(--ink); color: #fff; }
+.tasks__name { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.tasks__pin { flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--line); box-shadow: inset 0 2px 2px rgba(16, 32, 42, 0.25); }
+.tasks__tab[aria-pressed="true"] .tasks__pin { background: #33424d; }
+.tasks__tab.is-done .tasks__pin {
+  background: var(--yellow) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5 8.7 14 15 6.5' fill='none' stroke='%2310202a' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain;
+  box-shadow: none;
+}
+.tasks__goal { font-size: 15px; line-height: 1.35; font-weight: 500; }
+.tasks__hint { padding: 6px 10px; font-size: 14px; line-height: 1.35; color: var(--ink); background: #fff8d6; border-radius: 8px; }
+.tasks__steps { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0; padding: 0; list-style: none; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.tasks__steps li { display: flex; align-items: center; gap: 6px; }
+.tasks__steps li::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--line); }
+.tasks__steps li.is-on { color: var(--ink); }
+.tasks__steps li.is-on::before { background: var(--ok); }
+.tasks [hidden] { display: none; }
+/* Task 2: the results fill themselves in. */
+.tasks__table { border-collapse: collapse; font-size: 13px; line-height: 1.2; table-layout: fixed; width: 100%; max-width: 560px; }
+.tasks__table th, .tasks__table td { padding: 3px 6px; border: 1px solid var(--line); text-align: center; }
+.tasks__table th { font-weight: 700; color: var(--ink-2); }
+.tasks__table tr > th:first-child { text-align: left; width: 22%; }
+.tasks__table td { color: var(--ink-2); font-weight: 600; }
+.tasks__table td[data-mark="ok"] { background: #dff3e7; color: #00703c; }
+.tasks__table td[data-mark="slip"] { background: #fff1d6; color: #9a5a00; }
+.tasks__table td[data-mark="bad"] { background: #fde3dc; color: var(--warn); }
+.tasks__table td[data-mark="miss"] { background: var(--mist); color: var(--ink); }
+.tasks__row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; min-height: 36px; }
+.tasks__status { flex: 1 1 220px; min-width: 0; font-size: 14px; line-height: 1.3; color: var(--ink-2); }
+.tasks__status[data-kind="ok"] { color: #007a40; font-weight: 700; }
+.tasks__status[data-kind="warn"] { color: var(--warn); font-weight: 700; }
+.tasks__acts { display: flex; gap: 2px; margin-right: -8px; }
+.tasks__act { min-height: 30px; padding: 0 8px; border: 0; border-radius: 8px; background: none; color: var(--azure-deep); font-weight: 700; font-size: 14px; white-space: nowrap; cursor: pointer; }
+.tasks__act:hover { background: var(--mist); }
+
+/* Workspace. */
+.prog__ws { container: ws / inline-size; position: relative; flex: 1; min-height: 0; }
+.prog__blockly { position: absolute; inset: 0; }
+.prog__tools { position: absolute; z-index: 45; left: calc(var(--palette) + 12px); bottom: 26px; display: flex; align-items: center; gap: 2px; }
+.prog__tools button { width: 38px; height: 38px; padding: 7px; border: 0; border-radius: 10px; background: #fff; color: #6c7680; cursor: pointer; }
+.prog__tools button:hover { color: var(--ink); background: var(--mist); }
+.prog__tools svg { display: block; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.prog__toolgap { width: 1px; height: 26px; margin: 0 6px; background: var(--line); }
+.prog__run { position: absolute; z-index: 45; right: 26px; bottom: 26px; display: flex; gap: 14px; }
+.prog__round {
+  width: 64px; height: 64px; padding: 19px; border: 0; border-radius: 50%; cursor: pointer;
+  color: #fff; box-shadow: 0 2px 6px rgba(16, 32, 42, 0.25); transition: transform 0.08s;
+}
+.prog__round svg { display: block; fill: currentColor; }
+.prog__round:active { transform: scale(0.94); }
+.prog__round--stop { background: #b4bbc1; }
+.prog__round--play { background: var(--ok); padding: 17px; }
+.prog__round--play svg { transform: translateX(1px); }
+.is-running .prog__round--stop { background: var(--warn); }
+.is-running .prog__round--play { background: #b4bbc1; }
+
+.prog__split { position: relative; cursor: col-resize; background: var(--mist); touch-action: none; border-left: 1px solid var(--line); }
+.prog__split::after { content: ""; position: absolute; left: 2px; right: 2px; top: 50%; height: 44px; margin-top: -22px; border-radius: 3px; background: #b4bbc1; }
+.prog__split:hover::after, .prog__split.is-moving::after, .prog__split:focus-visible::after { background: var(--azure-deep); }
+
+/* 3D. */
+.prog__stage { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.prog__stage canvas { position: absolute; inset: 0; outline: none; cursor: grab; }
+.prog__stage canvas:active { cursor: grabbing; }
+
+/* Захват 1 | Захват 2. */
+.swap { position: absolute; z-index: 2; left: 10px; bottom: 10px; display: flex; gap: 3px; padding: 3px; border-radius: 12px; background: rgba(255, 255, 255, 0.88); }
+.swap button { height: 34px; padding: 0 12px; border: 0; border-radius: 9px; background: none; color: var(--ink-2); font-weight: 700; font-size: 14px; white-space: nowrap; cursor: pointer; }
+.swap button:hover { color: var(--ink); background: #fff; }
+.swap button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+
+.pad {
+  position: absolute; z-index: 2; right: 10px; bottom: 10px;
+  display: grid; grid-template-columns: repeat(3, 38px) 56px; grid-template-rows: repeat(2, 38px); gap: 3px;
+}
+.pad button { padding: 0; border: 0; border-radius: 9px; background: rgba(255, 255, 255, 0.88); color: var(--ink); font-weight: 700; font-size: 13px; cursor: pointer; touch-action: none; }
+.pad button:hover { background: #fff; }
+.pad button:active { background: var(--yellow); }
+.pad svg { display: block; width: 20px; height: 20px; margin: auto; fill: currentColor; }
+.pad__up { grid-area: 1 / 2; } .pad__left { grid-area: 2 / 1; } .pad__down { grid-area: 2 / 2; } .pad__right { grid-area: 2 / 3; }
+.pad__lift { grid-area: 1 / 4; } .pad__drop { grid-area: 2 / 4; }
+
+/* The hub, drawn upright: screen on top, the pill with its three buttons below. */
+.hubp { container: hubp / inline-size; flex: none; display: flex; gap: 14px; padding: 10px 12px; background: var(--paper); border-top: 1px solid var(--line); }
+.hubp__hub { flex: none; width: 148px; padding: 10px 10px 8px; display: grid; justify-items: center; gap: 8px; border-radius: 14px; background: #f3f4f5; box-shadow: inset 0 0 0 1px #d4d8db, 0 0 0 4px var(--yellow); margin: 4px 0 4px 4px; }
+.hubp__leds { display: grid; grid-template-columns: repeat(5, 12px); grid-template-rows: repeat(5, 12px); gap: 3px; padding: 5px; border-radius: 6px; background: #2c3640; }
+.hubp__leds i { border-radius: 2px; background: #fff; opacity: 0; box-shadow: 0 0 4px rgba(255, 255, 255, 0.7); }
+.hubp__pill { position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; height: 40px; border-radius: 20px; background: #dfe3e5; }
+.hubp__pill button { width: 46px; height: 40px; padding: 8px; border: 0; background: none; color: #5d6972; border-radius: 20px; cursor: pointer; touch-action: none; }
+.hubp__pill button:hover { color: var(--ink); }
+.hubp__pill button:active, .hubp__pill button.is-pressed { background: #c9cfd3; color: var(--ink); }
+.hubp__pill svg { display: block; fill: currentColor; }
+.hubp__pill .hubp__center {
+  position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; padding: 0; margin: -22px 0 0 -22px;
+  border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(16, 32, 42, 0.3), inset 0 0 0 7px var(--light, var(--ring, #e6e9eb));
+}
+.is-running .hubp__center { --ring: var(--ok); }
+/* The force sensor: a black treaded wheel, pressed in as hard as --press says (0..1). */
+.force { flex: none; display: grid; justify-items: center; align-content: start; gap: 2px; width: 104px; }
+.force__wheel {
+  position: relative; width: 70px; height: 70px; padding: 0; border: 0; border-radius: 50%; cursor: pointer; touch-action: none;
+  background: repeating-conic-gradient(#16151a 0 7deg, #3a3a42 7deg 12deg); box-shadow: 0 2px 4px rgba(16, 32, 42, 0.35);
+}
+.force__cap { position: absolute; inset: 9px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #4a4a52, #16151a 70%);
+  transform: scale(calc(1 - var(--press, 0) * 0.16)); box-shadow: inset 0 0 0 calc(var(--press, 0) * 10px) rgba(254, 217, 32, 0.85); }
+.force__wheel:focus-visible { outline: 3px solid var(--azure-deep); outline-offset: 3px; }
+.force__read { font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+.force__read b { font: 700 15px var(--font-mono); color: var(--ink); }
+.force__state { font-size: 13px; font-weight: 700; }
+.hubp__side { flex: 1; min-width: 0; display: grid; gap: 6px; align-content: start; }
+.hubp__port { font-size: 14px; line-height: 1.35; }
+.hubp__port p { font-weight: 700; }
+.hubp__port dl { display: grid; grid-template-columns: auto 72px; gap: 1px 10px; margin: 0; }
+.hubp__port dd { margin: 0; text-align: right; color: var(--ink-2); }
+.hubp__port b { font: 700 16px var(--font-mono); color: var(--ink); }
+.hubp__keys { font-size: 12px; line-height: 1.35; color: var(--ink-2); }
+.prog__stage .no-webgl { inset: 12px 12px auto; }
+.hubp kbd { padding: 0 4px; border-radius: 4px; background: var(--mist); font: 500 12px var(--font-mono); color: var(--ink); white-space: nowrap; }
+
+/* The splitter decides how wide each panel is, so these follow the panel, not the window. */
+@container tasks (max-width: 700px) {
+  .tasks__tab { font-size: 13px; gap: 5px; padding: 0 6px 0 5px; }
+  .tasks__name { white-space: normal; line-height: 1.05; }
+}
+@container tasks (max-width: 460px) {
+  .tasks__tab { font-size: 12px; padding: 0 4px; gap: 4px; }
+  .tasks__pin { width: 14px; height: 14px; }
+}
+@container hubp (max-width: 500px) {
+  .hubp__keys { display: none; }
+}
+@container hubp (max-width: 400px) {
+  .hubp { gap: 8px; }
+  .hubp__hub { width: 124px; }
+  .hubp__leds { grid-template-columns: repeat(5, 9px); grid-template-rows: repeat(5, 9px); }
+  .force { width: 88px; }
+}
+@container ws (max-width: 760px) {
+  .prog__tools button { width: 32px; height: 32px; padding: 5px; }
+  .prog__toolgap { margin: 0 3px; }
+  .prog__round { width: 52px; height: 52px; padding: 15px; }
+  .prog__round--play { padding: 14px; }
+  .prog__run { right: 18px; bottom: 22px; gap: 10px; }
+}
+
+/* Narrow: 3D on top, blocks below, the page scrolls. */
+@media (max-width: 899px) {
+  .prog { display: flex; flex-direction: column; height: auto; overflow: visible; }
+  .prog__split { display: none; }
+  .prog__right { order: -1; }
+  .prog__stage { flex: none; height: 52vh; min-height: 280px; }
+  .prog__ws { flex: none; height: 78vh; min-height: 440px; }
+  .hubp { flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .hubp__side { flex: 1 1 180px; grid-template-columns: minmax(0, 1fr); }
+  .hubp__port dl { grid-template-columns: auto minmax(0, 1fr); }
+  .tasks__acts { flex-wrap: wrap; margin-right: 0; }
+  /* The workspace beside the palette is about as wide as the run buttons: the tools go above them. */
+  .prog__tools { left: auto; right: 12px; bottom: 80px; width: 104px; flex-wrap: wrap; justify-content: flex-end; }
+  .prog__toolgap { display: none; }
+}
+
+@media (min-width: 900px) { body[data-view="program"] .toasts { left: auto; right: 12px; bottom: auto; top: calc(var(--topbar-h) + 12px); transform: none; width: min(420px, 38vw); } }

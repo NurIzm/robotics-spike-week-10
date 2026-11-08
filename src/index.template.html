@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Захваты</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/start.css">
+<link rel="stylesheet" href="css/lesson.css">
+<link rel="stylesheet" href="css/examples.css">
+<link rel="stylesheet" href="css/blocks.css">
+<link rel="stylesheet" href="css/program.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="topbar__brand" href="#start" aria-label="Захваты, на старт">
+    <span class="topbar__week">Неделя 10</span>
+    <span class="topbar__topic">Манипуляторы и автономия</span>
+  </a>
+  <nav class="beam" aria-label="Разделы урока">
+    <a class="beam__stop" href="#start" data-view="start"><span class="beam__hole"></span><span class="beam__label">Старт</span></a>
+    <a class="beam__stop" href="#lesson" data-view="lesson"><span class="beam__hole"></span><span class="beam__label">Урок</span></a>
+    <a class="beam__stop" href="#examples" data-view="examples"><span class="beam__hole"></span><span class="beam__label">В жизни</span></a>
+    <a class="beam__stop" href="#program" data-view="program"><span class="beam__hole"></span><span class="beam__label">Программа</span></a>
+  </nav>
+</header>
+<main>
+<section id="view-start" class="view" aria-label="Старт">
+<!--VIEW:start-->
+</section>
+<section id="view-lesson" class="view" aria-label="Урок" hidden>
+<!--VIEW:lesson-->
+</section>
+<section id="view-examples" class="view" aria-label="Примеры из жизни" hidden>
+<!--VIEW:examples-->
+</section>
+<section id="view-program" class="view" aria-label="Программа" hidden>
+<!--VIEW:program-->
+</section>
+</main>
+<div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+<script src="vendor/three.min.js"></script>
+<script src="vendor/three-addons.js"></script>
+<script src="vendor/blockly/blockly_compressed_vertical.js"></script>
+<script src="vendor/blockly/blocks_compressed.js"></script>
+<script src="vendor/blockly/blocks_compressed_vertical.js"></script>
+<script src="vendor/blockly/messages.js"></script>
+<script src="vendor/blockly/msg_ru.js"></script>
+<script src="js/core.js"></script>
+<script src="js/robot.js"></script>
+<script src="js/hero.js"></script>
+<script src="js/lesson.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/examples.js"></script>
+<script src="js/blocks.js"></script>
+<script src="js/vm.js"></script>
+<script src="js/sim.js"></script>
+<script src="js/program.js"></script>
+<script>
+RA.boot();
+// Fonts load after the page works: a school network that hangs on Google must not hold up the lesson.
+document.head.append(Object.assign(document.createElement('link'), { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Unbounded:wght@500;700;900&display=swap' }));
+</script>
+</body>
+</html>
