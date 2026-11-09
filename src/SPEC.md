@@ -18,6 +18,8 @@ blocks (§6) and visual identity (§10) still hold, except where this file says 
   changing a fragment: it stitches them into `index.html`. Do not edit `index.html` by hand.
 - `ref/` holds LEGO's pictures of the model (git-ignored, never published): `app_models_zahvaty.png` (the SPIKE app page),
   `main.png` (the model enlarged), `control.png`, `grip1.png`, `grip2.png` (the three builds), `force_sensor.png` (the sensor).
+  `ref/bi/`: every step of the three builds from the SPIKE app (`controller-NN.jpg`, `grabber1-NN.jpg`, `grabber2-NN.jpg`) and
+  `NOTES.md`, which describes the mechanism. The model was rebuilt from them on 2026-11-09; read NOTES.md before changing it.
 - Do not touch files you do not own (§2). `js/core.js`, `css/style.css`, `src/index.template.html`, `src/build.js` are shared and read-only.
 
 ## 1. Facts (true, sourced; do not invent others — when unsure, leave it out)
@@ -26,7 +28,7 @@ blocks (§6) and visual identity (§10) still hold, except where this file says 
   «Захват 2» (28 шагов). It is LEGO's model from the lesson «Super Cleanup» (unit «Invention Squad»): a hand controller with a Force
   Sensor and two grabbers that students test against each other.
 - Устройство управления (hand controller): the hub, an upright stand on one end of it, the Force Sensor on top of the stand with a
-  small black wheel on its plunger as a button cap. You press the wheel.
+  small wheel on its plunger as a button cap (black treaded tyre, light grey rim, red axle). You press the wheel.
 - Захват 1: its own medium motor and a flexible claw, two loops of grey ribbed hose held by yellow connectors. LEGO: flexible claw,
   made for light and flexible objects; bad with big, heavy or smooth objects.
 - Захват 2: its own medium motor and a split claw of black bent beams, one jaw forked. LEGO: made for large, heavy objects;
@@ -71,18 +73,18 @@ Y=0 is the bottom of the hub as the model rests on a table. X=0 is the front end
 
 - **Hub**: X∈[-11,0], Y∈[0,7], Z∈[-2,2], standing on its long edge, face plate towards +Z, as in week 9. In this model the centre
   button is at the stand end (-X), see `main.png`.
-- **Stand**: at the hub's -X end, rising to about Y=17: a long black beam or frame, an azure beam, magenta connectors (`control.png`).
-- **Force Sensor** on top of the stand: white body with a black back, plunger towards +X carrying a small black treaded wheel as a
-  button cap (`force_sensor.png`, `main.png`). About X∈[-10,-5], Y∈[14,18]. Its cable goes down to the hub, port E.
-- **Grabber 2** (attached in `main.png`): medium motor (azure body, white head, azure round rotor) fixed on the hub's front top end
-  with an azure L-beam and a yellow beam, sticking out forwards; in front of it the split claw: two black bent liftarms with
-  C-shaped tips, magenta and grey parts on the frame, black pins with yellow tips, one jaw forked. Open gap ≈12, closed gap ≈3
-  (its tips never meet, so a 2-wide brick is never touched). Jaws about X∈[9,21], height about Y∈[6,9.5].
-- **Grabber 1** (lying in front in `main.png`, `grip1.png`): its own medium motor and a frame of azure, magenta and white beams;
-  in front, two loops of grey ribbed hose, each loop in a vertical plane from an upper to a lower yellow connector, one loop on
-  each side (±Z). Open gap ≈7, closed gap 0 (the loops squeeze together). Loops about X∈[9,19], Y∈[5,10] when attached.
-- Both claws close symmetrically along Z towards Z=0. One motor turn of ~40° takes them from open to closed. Grip point of both
-  about (16, 7.5, 0) when attached. Cables: flat white ribbons.
+- **Stand**: at the hub's -X end, rising to about Y=17: two black 15L beams, two azure 7L beams, two magenta 3×3 blocks.
+- **Force Sensor** on top of the stand: white body with a black back, plunger towards +X carrying the wheel cap (§1).
+  About X∈[-10,-5], Y∈[14,18]. Its cable goes down to the hub, port E.
+- **Shared motor base**: the motor's output points down; both jaws turn on vertical pins on the motor head, mirror-wise, joined
+  by a grey H link, so the tips swing level on arcs.
+- **Grabber 2**: a tall fork (two hooked black bent liftarms, two magenta blocks between them) and a single hooked jaw at mid
+  height; the hooks face each other. Open gap 12, closed gap 3 (a 2-wide brick is never touched). Box X∈[10,22], Y∈[5,14];
+  grip point (13.5, 8, 0.9), inside the C behind the hooks, so held objects never cut into them.
+- **Grabber 1**: two arms, each a black axle with yellow 90° connectors 5 modules apart and a grey ribbed hose looping between
+  them. Open gap 7, closed gap 0. Box about X∈[11,18.7], Y∈[6.1,12]; grip point about (16.8, 9.05, 0).
+- With +X to the claw and the face plate to +Z, the model is LEGO's mirror image; `hero.js` mirrors it back with
+  `scale.x = -1`. Cables run over the hub to A and E (LEGO's hang under it). Cables: flat white ribbons.
 
 Plastic look and colours as in week 9: azure `#01adc4`, magenta `#c92e85`, yellow `#fed920`, white `#eceded`, black `#16151a`,
 grey `#a9b0b5`. Ribbed hose: grey with visible rings. Whole scene under ~80k triangles, static meshes merged per material.
@@ -115,9 +117,10 @@ g.setBuildStage(n, t)   // shows stages up to n; stage n flies into place as t g
 g.update(dt)            // call every frame
 ```
 
-Stages (we do not have LEGO's step pages, so step numbers only per build): 1 «Хаб и стойка», 2 «Датчик силы» (the wheel on the
-plunger, cable to E) — build «Устройство управления», steps 1–15; 3 «Мотор и рамка захвата 1», 4 «Гибкие петли» — «Захват 1», steps 1–23;
-5 «Мотор и рамка захвата 2», 6 «Раздвоенная клешня» — «Захват 2», steps 1–28; 7 «Захват на устройство управления» (cable to A).
+Stages (step numbers only per build): 1 «Хаб и стойка», 2 «Датчик силы» (the wheel on the plunger, cable to E) — build
+«Устройство управления», steps 1–15; 3 «Мотор захвата 1», 4 «Гибкие петли» — «Захват 1», steps 1–23; 5 «Мотор захвата 2»,
+6 «Раздвоенная клешня», 7 «Захват на устройство управления» (cable to A) — «Захват 2», steps 1–28: attaching a grabber is the
+last step of each grabber build.
 Write `parts` only as plain descriptions you can see in the pictures, no counts you cannot verify.
 
 ## 4. Start view (`js/hero.js`, `css/start.css`, `src/views/start.html`, owner: model)

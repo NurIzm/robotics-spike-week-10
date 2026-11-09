@@ -300,11 +300,13 @@
     const squeeze = () => M.push;
 
     /* ---------- Jaws ---------- */
-    // The attached claw's box from the model, turned with the tool: how far its lowest corner hangs below the grip point.
+    // The attached claw's box from the model, turned with the tool: its underside, the bottom edge and the front edge up from the lowest
+    // corner, as [ahead, up] from the grip point, and how far that corner hangs below it. Objects ahead count up to 2 past that corner,
+    // and never less than 3.
     const measure = () => {
-      const G = arm.GRABBERS[arm.grabber], g = arm.gripPoint.position;
-      jaw = { G, drop: 0, x0: G.reach[0] - g.x, x1: G.reach[1] - g.x, half: (G.height[1] - G.height[0]) / 2 };
-      for (const x of G.reach) for (const y of G.height) jaw.drop = Math.max(jaw.drop, -v3.set(x - g.x, y - g.y, 0).applyQuaternion(tilt).y);
+      const G = arm.GRABBERS[arm.grabber], g = arm.gripPoint.position, [x0, x1] = G.reach, [y0, y1] = G.height;
+      const edge = [[x0, y0], [x1, y0], [x1, y1]].map(([x, y]) => v3.set(x - g.x, y - g.y, 0).applyQuaternion(tilt).toArray());
+      jaw = { G, edge, drop: Math.max(0, -edge[1][1]), ahead: Math.max(3, edge[1][0] + 2), x0: x0 - g.x, x1: x1 - g.x, half: (y1 - y0) / 2 };
     };
     // The object's middle in the claw's own frame, taken at its part nearest the grip point (a bottle is long).
     const local = (o) => {
@@ -387,17 +389,22 @@
     };
 
     /* ---------- The hand that carries the tool ---------- */
-    // The lowest the grip point can go here: the claw's tip stands on the table, the bin, or an object it cannot close around.
+    // The lowest the grip point can go here: the claw's underside stands on the table, the bin's floor or wall (a wall is thin, so the
+    // underside is checked every quarter module or so), or its tip on an object it cannot close around.
     const floor = () => {
-      const gap = arm.tipGap();
-      let base = ground(hand.x + 3, hand.z);
+      const gap = arm.tipGap(), e = jaw.edge;
+      let y = 0, base = 0;
+      for (let i = 0; i < 2; i++) for (let k = 0; k <= 40; k++) {
+        const u = k / 40, x = e[i][0] + (e[i + 1][0] - e[i][0]) * u, up = e[i][1] + (e[i + 1][1] - e[i][1]) * u;
+        y = Math.max(y, ground(hand.x + x, hand.z) - up);
+      }
       objects.forEach((o) => {
-        if (o === held || o.state !== 'rest' || Math.abs(o.x - hand.x) > o.l / 2 + 3) return;
+        if (o === held || o.state !== 'rest' || o.x - hand.x < -o.l / 2 - 3 || o.x - hand.x > o.l / 2 + jaw.ahead) return;
         const dz = Math.abs(o.z - hand.z);
         if (dz + o.w / 2 <= gap / 2 + FIT || dz - o.w / 2 > gap / 2 + 1.2) return;
         base = Math.max(base, o.y + o.h);
       });
-      let y = base + jaw.drop;
+      y = Math.max(y, base + jaw.drop);
       if (held) y = Math.max(y, ground(held.x, held.z) - hold.y);
       return y;
     };

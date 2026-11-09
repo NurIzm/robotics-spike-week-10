@@ -2,8 +2,9 @@
 (function () {
   const RA = window.RA;
   const Q = Math.PI / 2;
-  const AZIMUTH = -0.42, ELEVATION = 0.5;     // from the front, a little from the stand's side, as LEGO's picture
+  const AZIMUTH = 0.42, ELEVATION = 0.5;      // from the front, a little from the stand's side, as LEGO's picture
   const INTRO = 1.8, SWEEP = 0.8, TURN = 0.1, BEAT = 7, SQUEEZE = 3;    // seconds, radians, rad/s
+  const REST = 0.7;                           // grip between presses: both claws about parallel, as in LEGO's picture; wide open they splay
   const FILL_W = 0.9, FILL_H = 0.84;          // share of the screen the model may take
   const ease = (t) => 1 - (1 - t) ** 3;
   const hold = (p, edge) => Math.min(1, p / edge, (1 - p) / edge);        // ramps in, holds, ramps out as p runs 0..1
@@ -14,7 +15,11 @@
     init(root) {
       const g = RA.createGrabber();
       g.setLayout('spread');
-      // The model's middle and the corners of each part's box, measured with the claws open: enough to frame it from any side.
+      g.setGrip(REST);
+      // The model keeps +X towards the claw for the other views, which makes it LEGO's mirror image; mirrored back, the claw is on the left.
+      g.group.scale.x = -1;
+      g.group.updateMatrixWorld();
+      // The model's middle and the corners of each part's box, measured at rest, the widest the claws open here: enough to frame it from any side.
       const outline = [];
       Object.values(g.parts).forEach((p) => {
         const b = new THREE.Box3().setFromObject(p, true);
@@ -23,7 +28,7 @@
       const aim = new THREE.Box3().setFromObject(g.group, true).getCenter(new THREE.Vector3());
       const AIM = aim.toArray();
 
-      const az = AZIMUTH + (RA.reducedMotion ? 0 : SWEEP);
+      const az = AZIMUTH - (RA.reducedMotion ? 0 : SWEEP);
       const dir = [Math.sin(az) * Math.cos(ELEVATION), Math.sin(ELEVATION), Math.cos(az) * Math.cos(ELEVATION)];
       stage = RA.stage(RA.$('.hero__stage', root), { fov: 18, target: AIM, camera: dir.map((v, i) => AIM[i] + v * 120) });
       stage.scene.add(g.group);
@@ -61,18 +66,18 @@
         const push = 1 + 0.3 * (1 - ease(1 - intro));
         stage.camera.position.sub(c.target).setLength(distance() * push).add(c.target);
         if (RA.reducedMotion) return;
-        // OrbitControls turns per frame; this keeps the speed the same on any screen.
-        c.autoRotateSpeed = ((TURN + (3 * SWEEP / INTRO) * intro * intro) * dt * 3600) / (2 * Math.PI);
+        // OrbitControls turns per frame; this keeps the speed the same on any screen. Negative: the sweep runs from the claw's side.
+        c.autoRotateSpeed = -((TURN + (3 * SWEEP / INTRO) * intro * intro) * dt * 3600) / (2 * Math.PI);
         if (intro > 0) {
           intro = Math.max(0, intro - dt / INTRO);
-          g.setGrip(1 - ease(1 - intro));      // the claws open as the model arrives
+          g.setGrip(1 - (1 - REST) * ease(1 - intro));      // the claws open as the model arrives
           return;
         }
         // Now and then a finger presses the wheel cap, the claws close, then both let go.
         // The beat counts from the intro's end, so the first press ramps in instead of snapping shut.
         const p = ((t - INTRO) % BEAT) / SQUEEZE, q = (p - 0.1) / 0.9;
         g.setForce(p < 1 ? 100 * hold(p, 0.2) : 0);
-        g.setGrip(q > 0 && q < 1 ? Math.sin(hold(q, 0.3) * Q) ** 2 : 0);
+        g.setGrip(REST + (1 - REST) * (q > 0 && q < 1 ? Math.sin(hold(q, 0.3) * Q) ** 2 : 0));
       });
     },
     enter() { stage.start(); },
