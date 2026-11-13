@@ -1,0 +1,335 @@
+<div class="les">
+
+<svg class="les-defs" aria-hidden="true">
+  <symbol id="les-ico-force" viewBox="0 0 48 48"><path d="M9 18H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4M39 18h4a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-4" fill="#fff" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="10" width="30" height="28" rx="5" fill="#fff" stroke="currentColor" stroke-width="1.5"/><circle cx="24" cy="24" r="9" fill="currentColor"/><path d="M24 19.5v9M19.5 24h9" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  <symbol id="les-ico-motor" viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#fff" stroke="currentColor" stroke-width="1.5"/><circle cx="24" cy="12" r="5.7" fill="currentColor"/><circle cx="24" cy="36" r="5.7" fill="currentColor"/><circle cx="12" cy="24" r="5.7" fill="currentColor"/><circle cx="36" cy="24" r="5.7" fill="currentColor"/><path d="M24 20v8M20 24h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="les-ico-play" viewBox="0 0 48 48"><path d="M17 13 35 24 17 35z" fill="#fff" stroke="#fff" stroke-width="3.5" stroke-linejoin="round"/></symbol>
+  <!-- Last week's Роборука from the side: hub, frame, motor, two fingers with tyres. -->
+  <symbol id="les-pic-arm" viewBox="0 0 230 92">
+    <rect x="6" y="22" width="66" height="48" rx="5" fill="#eceded" stroke="#10202a" stroke-width="2"/>
+    <rect x="6" y="22" width="66" height="9" rx="4" fill="#fed920"/>
+    <circle cx="20" cy="50" r="5" fill="#fff" stroke="#c92e85" stroke-width="3"/>
+    <circle cx="60" cy="52" r="7" fill="#fff" stroke="#10202a" stroke-width="2"/>
+    <rect x="79" y="25" width="60" height="42" rx="5" fill="none" stroke="#c92e85" stroke-width="9"/>
+    <rect x="143" y="33" width="20" height="26" rx="3" fill="#01adc4"/>
+    <rect x="161" y="35" width="13" height="22" rx="3" fill="#eceded" stroke="#10202a" stroke-width="2"/>
+    <path d="M172 40l26-26M172 52l26 26" stroke="#16151a" stroke-width="7" fill="none"/>
+    <circle cx="207" cy="14" r="10" fill="#16151a"/>
+    <circle cx="207" cy="78" r="10" fill="#16151a"/>
+  </symbol>
+  <!-- Today's model from the side: hub, stand with the Force Sensor and its wheel, grabber 2 in front. -->
+  <symbol id="les-pic-tool" viewBox="0 0 360 200">
+    <path d="M60 40C46 70 60 104 52 122M118 120c12-10 20-12 26-12" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+    <path d="M60 40C46 70 60 104 52 122M118 120c12-10 20-12 26-12" fill="none" stroke="#a9b0b5" stroke-width="1.5" stroke-dasharray="1 4" stroke-linecap="round"/>
+    <rect x="20" y="120" width="112" height="70" rx="8" fill="#fed920"/>
+    <rect x="25" y="125" width="102" height="60" rx="5" fill="#eceded"/>
+    <circle cx="40" cy="155" r="8" fill="#fff" stroke="#10202a" stroke-width="2"/>
+    <path d="M66 140h1M76 140h1M86 140h1M96 140h1M106 140h1M66 150h1M76 150h1M86 150h1M96 150h1M106 150h1M66 160h1M76 160h1M86 160h1M96 160h1M106 160h1M66 170h1M76 170h1M86 170h1M96 170h1M106 170h1" stroke="#a9b0b5" stroke-width="6" stroke-linecap="round"/>
+    <rect x="8" y="22" width="11" height="168" rx="3" fill="#16151a"/>
+    <rect x="24" y="52" width="10" height="68" rx="3" fill="#01adc4"/>
+    <rect x="6" y="80" width="32" height="12" rx="3" fill="#c92e85"/>
+    <rect x="28" y="12" width="12" height="40" rx="3" fill="#16151a"/>
+    <rect x="38" y="12" width="40" height="40" rx="5" fill="#eceded" stroke="#10202a" stroke-width="2"/>
+    <rect x="78" y="28" width="16" height="8" fill="#16151a"/>
+    <rect x="92" y="14" width="14" height="36" rx="4" fill="#16151a"/>
+    <path d="M95 18v28M99 18v28M103 18v28" stroke="#47586a" stroke-width="1.5"/>
+    <rect x="108" y="98" width="62" height="24" rx="4" fill="#01adc4"/>
+    <rect x="168" y="96" width="28" height="28" rx="4" fill="#eceded" stroke="#10202a" stroke-width="2"/>
+    <rect x="196" y="100" width="22" height="20" rx="3" fill="#c92e85"/>
+    <path d="M214 104h56l18-12h40l10 10-10 6h-36l-16 12h-62z" fill="#16151a"/>
+    <path d="M214 116h60l14 10h44l8 8-8 6h-48l-14-10h-56z" fill="#16151a" opacity="0.72"/>
+    <circle cx="244" cy="112" r="4" fill="#fed920"/>
+  </symbol>
+</svg>
+
+<header class="les-head">
+  <div>
+    <p class="les-head__kicker">Сабақ: Робот-қол, 2-модель. Конструкцияны жетілдіру</p>
+    <h1>Манипулятор&shy;лар және автономия</h1>
+  </div>
+  <div class="les-head__mid">
+    <p class="les-head__goal"><b>Мақсаты</b> Робот-қолдың 2-моделін құрастыру. Жанасу және күш датчигін пайдалану, басу арқылы бағдарламалау.</p>
+    <dl class="les-head__facts">
+      <div><dt>Уақыты</dt><dd>1&nbsp;сағат</dd></div>
+      <div><dt>Жұмыс түрі</dt><dd>Құрастыру және бөлшектеу</dd></div>
+      <div><dt>Аптасы</dt><dd>10</dd></div>
+    </dl>
+  </div>
+  <nav class="les-route" aria-labelledby="les-route-title">
+    <h2 id="les-route-title">Нені үйренеміз</h2>
+    <ol>
+      <li><button type="button" data-to="les-was">Не жақсарды</button></li>
+      <li><button type="button" data-to="les-sense">Күш датчигі</button></li>
+      <li><button type="button" data-to="les-code">Басу арқылы бағдар&shy;ламалау</button></li>
+      <li><button type="button" data-to="les-grab">Екі қармауыш</button></li>
+      <li><button type="button" data-to="les-test">Әділ сынақ</button></li>
+      <li><button type="button" data-to="les-build">Құрастыру және бөлшектеу</button></li>
+      <li><button type="button" data-to="les-auto">Кім шешеді</button></li>
+      <li><button type="button" data-to="les-quiz">Шағын тест</button></li>
+    </ol>
+  </nav>
+</header>
+
+<section class="les-sec les-was" id="les-was" aria-labelledby="les-was-title">
+  <div>
+    <h2 id="les-was-title">Бұрын және қазір</h2>
+    <p class="les-lead">Өткен сабақта біз Робот-қолды құрастырдық. Бүгін идея сол, ал конструкция жақсырақ.</p>
+  </div>
+  <div class="les-vs">
+    <article class="les-vs__col">
+      <svg class="les-vs__pic" viewBox="0 0 230 92" aria-hidden="true"><use href="#les-pic-arm"/></svg>
+      <h3><span>Бұрын</span> Робот-қол</h3>
+      <dl>
+        <div><dt>Басқару</dt><dd>Хабтағы сол жақ батырма. Тек «басылған» немесе «жіберілген» деп жауап береді.</dd></div>
+        <div><dt>Қармауыш</dt><dd>Біреу: шиналы екі саусақ.</dd></div>
+        <div><dt>Порттар</dt><dd>Мотор F портында.</dd></div>
+      </dl>
+    </article>
+    <article class="les-vs__col les-vs__col--now">
+      <svg class="les-vs__pic" viewBox="0 0 360 200" aria-hidden="true"><use href="#les-pic-tool"/></svg>
+      <h3><span>Қазір</span> Қармауыштар</h3>
+      <dl>
+        <div><dt>Басқару</dt><dd>Басқару құрылғысындағы бөлек күш датчигі. Ол өзінің қаншалықты қатты басылғанын да сезеді.</dd></div>
+        <div><dt>Қармауыш</dt><dd>Екі ауыстырмалы қармауыш: иілгіш және айыр. Әрқайсысының өз моторы бар.</dd></div>
+        <div><dt>Порттар</dt><dd>Мотор A портында, күш датчигі E портында.</dd></div>
+      </dl>
+    </article>
+  </div>
+  <div class="les-cycle">
+    <p><b>Конструкцияны жетілдіру</b> — оны жақсарту деген сөз. Инженерлер мұны шеңбер бойымен қайталайды:</p>
+    <ol>
+      <li><b>Құрастыру</b> Екі қармауышты құрастырамыз.</li>
+      <li><b>Сынау</b> Олармен әртүрлі заттарды аламыз.</li>
+      <li><b>Салыстыру</b> Қайсысы ұстайтынын кестеге белгілейміз.</li>
+      <li><b>Жақсарту</b> Нені өзгертетінімізді шешіп, қайта сынаймыз.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="les-sec les-sense" id="les-sense" aria-labelledby="les-sense-title">
+  <div class="les-sense__text">
+    <h2 id="les-sense-title">Күш датчигі: жанасу және күш</h2>
+    <p>Датчиктің батырмасы ішке 8&nbsp;мм кіреді. Бұл дәл бір LEGO модулі. Датчик батырманы секундына 100 рет тексереді.</p>
+    <dl class="les-zones">
+      <div class="les-zones__touch"><dt>Жанасу: алғашқы 2&nbsp;мм</dt><dd><span style="white-space:nowrap">0,5–1&nbsp;Н</span> күшпен басқанда, шамамен 1&nbsp;мм-де басуды сезеді. Тек «басылған» немесе «басылмаған» деп жауап береді.</dd></div>
+      <div class="les-zones__force"><dt>Күш: 2–8&nbsp;мм</dt><dd>2,5–10&nbsp;Н аралығындағы күшті 0,1&nbsp;Н қадаммен өлшейді. Ең көбі 10&nbsp;Н көрсетеді. SPIKE қолданбасында күшті ньютонмен <span style="white-space:nowrap">(0–10)</span> немесе пайызбен <span style="white-space:nowrap">(0–100)</span> көруге болады.</dd></div>
+    </dl>
+    <p class="les-newton"><b>Ньютон (Н)</b> — күштің өлшем бірлігі. 1&nbsp;Н шамамен массасы 100&nbsp;г болатын алманың салмағына тең. 10&nbsp;Н — осындай он алманың салмағы.</p>
+  </div>
+  <div class="les-sense__lab">
+    <div class="les-press" id="les-press" role="slider" tabindex="0" aria-label="Күш датчигінің батырмасы. Төмен нұсқар пернесі тереңірек басады, жоғары нұсқар пернесі жібереді." aria-valuemin="0" aria-valuemax="8" aria-valuenow="0">
+      <svg viewBox="0 0 420 390" aria-hidden="true">
+        <rect class="les-press__band" x="318" y="74" width="20" height="20"/>
+        <rect class="les-press__band les-press__band--force" x="318" y="94" width="20" height="60"/>
+        <g class="les-press__ticks"><path d="M338 74h12M338 94h12M338 114h8M338 134h8M338 154h12"/><text x="356" y="81">0 мм</text><text x="356" y="102">2</text><text x="356" y="162">8</text></g>
+        <path class="les-press__mark" id="les-press-mark" d="M314 74l-14-9v18z"/>
+        <g id="les-press-cap">
+          <rect class="les-press__shaft" x="190" y="60" width="20" height="110"/>
+          <rect class="les-press__wheel" x="115" y="40" width="170" height="34" rx="8"/>
+          <path class="les-press__tread" d="M133 42v30M151 42v30M169 42v30M187 42v30M205 42v30M223 42v30M241 42v30M259 42v30"/>
+        </g>
+        <path class="les-press__cable les-press__cable--edge" d="M290 345c60 0 70 30 120 30"/><path class="les-press__cable" d="M290 345c60 0 70 30 120 30"/><text class="les-press__to" x="414" y="326">E портына</text>
+        <rect class="les-press__back" x="110" y="322" width="180" height="40" rx="6"/>
+        <rect class="les-press__body" x="110" y="160" width="180" height="172" rx="12"/>
+        <rect class="les-press__collar" x="180" y="160" width="40" height="14" rx="3"/>
+        <circle class="les-press__hole" cx="134" cy="200" r="9"/><circle class="les-press__hole" cx="266" cy="200" r="9"/>
+        <circle class="les-press__hole" cx="134" cy="300" r="9"/><circle class="les-press__hole" cx="266" cy="300" r="9"/>
+      </svg>
+    </div>
+    <div class="les-read">
+      <p><span>Батырма жүрісі</span><b><output id="les-depth">0,0</output> мм</b></p>
+      <p><span>Аймақ</span><b id="les-zone">басылмаған</b></p>
+      <p><span>Күш</span><b><output id="les-force">0 Н · 0 %</output></b></p>
+      <ul class="les-answers" aria-label="Датчик қазір не деп жауап береді">
+        <li data-ans="pressed"><span class="blk blk--bool blk--sense"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>—<span class="blk__dd">басылған</span>?</span><b>жоқ</b></li>
+        <li data-ans="hard"><span class="blk blk--bool blk--sense"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>—<span class="blk__dd">қатты басылған</span>?</span><b>жоқ</b></li>
+        <li data-ans="released"><span class="blk blk--bool blk--sense"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>—<span class="blk__dd">жіберілген</span>?</span><b>иә</b></li>
+      </ul>
+    </div>
+    <p class="les-press__hint">Дөңгелекті басып, төмен тарт: неғұрлым терең болса, соғұрлым қатты. Бұл сайтта «қатты басылған» дегеніміз — 7&nbsp;Н және одан көп.</p>
+  </div>
+</section>
+
+<section class="les-sec les-code" id="les-code" aria-labelledby="les-code-title">
+  <div>
+    <h2 id="les-code-title">Басу арқылы бағдарламалау</h2>
+    <p class="les-lead">Датчиктен төрт тәсілмен сұрауға болады. Қармауыштың моторы A портында: 345 позициясында қармауыш қысулы, 25 позициясында ашық.</p>
+  </div>
+  <div class="les-ways">
+    <article class="les-way">
+      <h3>Оқиға</h3>
+      <div class="les-prog" role="img" aria-label="Бағдарлама: E басылған кезде, A сағат тіліне қарсы 345 позициясына бару.">
+        <div class="blk blk--hat blk--event"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span><span class="blk__dd">басылған</span>кезде</div>
+        <div class="blk blk--motor"><svg class="blk__ico"><use href="#les-ico-motor"/></svg><span class="blk__port">A</span><span class="blk__dd">сағат тіліне қарсы</span><span class="blk__num">345</span>позициясына бару</div>
+      </div>
+      <p>Ішкі бағдарлама басуды өзі күтеді. Басу бір нәрсені іске қосуы керек болғанда қолайлы.</p>
+    </article>
+    <article class="les-way">
+      <h3>Күту</h3>
+      <div class="les-prog" role="img" aria-label="Бағдарлама: бағдарлама іске қосылғанда, E басылған болғанша күту, A сағат тіліне қарсы 345 позициясына бару.">
+        <div class="blk blk--hat blk--event"><svg class="blk__ico"><use href="#les-ico-play"/></svg>бағдарлама іске қосылғанда</div>
+        <div class="blk blk--ctl"><span class="blk blk--bool blk--sense"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>—<span class="blk__dd">басылған</span>?</span>болғанша күту</div>
+        <div class="blk blk--motor"><svg class="blk__ico"><use href="#les-ico-motor"/></svg><span class="blk__port">A</span><span class="blk__dd">сағат тіліне қарсы</span><span class="blk__num">345</span>позициясына бару</div>
+      </div>
+      <p>Бағдарлама қадам-қадаммен орындалады және осы қадамда басуды күтеді. Әрекеттер ретімен орындалатын кезде қолайлы.</p>
+    </article>
+    <article class="les-way">
+      <h3>Шарт</h3>
+      <div class="les-prog" role="img" aria-label="Бағдарлама: үнемі қайталау: егер E басылған болса, онда A сағат тіліне қарсы 345 позициясына бару, әйтпесе A ең қысқа жолмен 25 позициясына бару.">
+        <div class="blk blk--hat blk--event"><svg class="blk__ico"><use href="#les-ico-play"/></svg>бағдарлама іске қосылғанда</div>
+        <div class="blk-c blk--ctl">
+          <div class="blk blk--ctl">үнемі қайталау</div>
+          <div class="blk-c__in">
+            <div class="blk-c blk--ctl">
+              <div class="blk blk--ctl">егер<span class="blk blk--bool blk--sense"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>—<span class="blk__dd">басылған</span>?</span>, онда</div>
+              <div class="blk-c__in"><div class="blk blk--motor"><svg class="blk__ico"><use href="#les-ico-motor"/></svg><span class="blk__port">A</span><span class="blk__dd">сағат тіліне қарсы</span><span class="blk__num">345</span>позициясына бару</div></div>
+              <div class="blk blk--ctl">әйтпесе</div>
+              <div class="blk-c__in"><div class="blk blk--motor"><svg class="blk__ico"><use href="#les-ico-motor"/></svg><span class="blk__port">A</span><span class="blk__dd">ең қысқа жолмен</span><span class="blk__num">25</span>позициясына бару</div></div>
+              <div class="blk-c__end"></div>
+            </div>
+          </div>
+          <div class="blk-c__end"></div>
+        </div>
+      </div>
+      <p>Бағдарлама датчикті үнемі тексеріп, екеуінің бірін таңдайды: басылған болса — қысу, әйтпесе — ашу.</p>
+    </article>
+    <article class="les-way">
+      <h3>Мән</h3>
+      <div class="les-prog" role="img" aria-label="Бағдарлама: үнемі қайталау: A моторды E қысымының пайызы мен минус 1-дің көбейтіндісіне тең қуатпен іске қосу.">
+        <div class="blk blk--hat blk--event"><svg class="blk__ico"><use href="#les-ico-play"/></svg>бағдарлама іске қосылғанда</div>
+        <div class="blk-c blk--ctl">
+          <div class="blk blk--ctl">үнемі қайталау</div>
+          <div class="blk-c__in">
+            <div class="blk blk--motor"><svg class="blk__ico"><use href="#les-ico-motor"/></svg><span class="blk__port">A</span>моторды<span class="blk blk--round blk--op"><span class="blk blk--round blk--sense"><svg class="blk__ico"><use href="#les-ico-force"/></svg><span class="blk__port">E</span>қысымы,<span class="blk__dd">%</span></span>*<span class="blk__num">-1</span></span>% қуатпен іске қосу</div>
+          </div>
+          <div class="blk-c__end"></div>
+        </div>
+      </div>
+      <p>Датчик 0–100 аралығындағы сан береді. Неғұрлым қатты бассаң, мотор қармауышты соғұрлым қатты қысады. Минус керек, себебі мотор сағат тіліне қарсы айналғанда қармауыш қысылады.</p>
+    </article>
+  </div>
+</section>
+
+<section class="les-sec les-grab" id="les-grab" aria-labelledby="les-grab-title">
+  <div>
+    <h2 id="les-grab-title">Екі қармауыш</h2>
+    <p class="les-lead">Хаб пен датчик ортақ, ал қармауыштар ауысады. Қармауыш басқару құрылғысына алдыңғы жағынан бекітіледі, оның моторының кабелі хабқа барады.</p>
+  </div>
+  <div class="les-grab__bench">
+    <div class="les-grab__stage" id="les-grab-stage" role="img" aria-label="Үш өлшемді модель: қармауышы бар басқару құрылғысы. Оны айналдыруға болады."></div>
+    <div class="les-grab__panel">
+      <div class="les-switch" role="group" aria-label="Модельде қай қармауыш тұр">
+        <button type="button" data-grabber="1" aria-pressed="false">1-қармауыш</button>
+        <button type="button" data-grabber="2" aria-pressed="true">2-қармауыш</button>
+      </div>
+      <label class="les-range">Қармауышты қысу<input type="range" id="les-grip" min="0" max="100" value="0"></label>
+      <p class="les-grab__motor">A моторы <output id="les-grip-pos">25</output>° позициясында</p>
+      <article class="les-gr" data-card="1" hidden>
+        <h3>Иілгіш</h3>
+        <dl>
+          <div><dt>Қалай ұстайды</dt><dd>Сұр қатпарлы түтіктен жасалған екі тұзақ бір-біріне жақындап, затты қысып ұстайды.</dd></div>
+          <div><dt>Жақсы алады</dt><dd>Жеңіл әрі иілгіш заттар.</dd></div>
+          <div><dt>Нашар алады</dt><dd>Үлкен, ауыр немесе тегіс заттар.</dd></div>
+        </dl>
+        <p class="les-gr__kin">Өткен сабақтағы жұмсақ қармауышқа ұқсайды: оның тұзақтары резеңке саусақтар сияқты иіледі.</p>
+      </article>
+      <article class="les-gr" data-card="2">
+        <h3>Айыр</h3>
+        <dl>
+          <div><dt>Қалай ұстайды</dt><dd>Қара иілген арқалықтардан жасалған екі қатты жақ затты екі бүйірінен қысады. Жақтардың бірі айыр.</dd></div>
+          <div><dt>Жақсы алады</dt><dd>Үлкен әрі ауыр заттар.</dd></div>
+          <div><dt>Нашар алады</dt><dd>Кішкентай заттар: оларды алу мүмкін емес дерлік.</dd></div>
+        </dl>
+        <p class="les-gr__kin">Бұл Робот-қолдағыдай саусақты қармауыш, тек резеңке шиналары жоқ.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="les-sec les-test" id="les-test" aria-labelledby="les-test-title">
+  <div class="les-test__head">
+    <h2 id="les-test-title">Әділ сынақ</h2>
+    <p class="les-lead">Қай қармауыштың жақсырақ екенін қалай білуге болады? Екеуін де бірдей сынау керек. Әділ сынақта тек бір нәрсе өзгереді, қалғанының бәрі бұрынғыдай қалады.</p>
+    <p class="les-test__ask"><b>Талқылаңдар</b> Адамдар қоқысты не үшін қармауышпен жинайды?</p>
+  </div>
+  <div class="les-trials" id="les-trials"></div>
+  <div class="les-test__foot">
+    <p>Ұяшықты бас: <b class="les-mark is-yes">✓</b> ұстайды, тағы бассаң <b class="les-mark is-no">✗</b> ұстамайды, тағы бассаң бос.</p>
+    <button type="button" class="btn" id="les-test-clear">Кестені тазалау</button>
+  </div>
+</section>
+
+<section class="les-sec les-build" id="les-build" aria-labelledby="les-build-title">
+  <div>
+    <h2 id="les-build-title">Құрастыру және бөлшектеу</h2>
+    <p class="les-lead">Нұсқаулық SPIKE қолданбасында: <b>Модели → Захваты</b>. Қолданба орыс тілінде ашылады, онда «Қармауыштар» моделі «Захваты» деп аталады. Нұсқаулықта 66 қадам, үш бөлік бар: басқару құрылғысы — «Устройство управления» (15 қадам), 1-қармауыш — «Захват 1» (23 қадам), 2-қармауыш — «Захват 2» (28 қадам).</p>
+  </div>
+  <div class="les-build__bench">
+    <div class="les-build__stage" id="les-build-stage" role="img" aria-label="Құрастыру кезеңіндегі үш өлшемді модель. Оны айналдыруға болады."></div>
+    <div class="les-build__card" aria-live="polite">
+      <p class="les-build__steps"><span id="les-stage-n"></span> <span id="les-stage-steps"></span></p>
+      <h3 id="les-stage-title"></h3>
+      <p id="les-stage-text"></p>
+      <p class="les-build__parts"><b>Бөлшектер</b> <span id="les-stage-parts"></span></p>
+      <div class="les-build__nav">
+        <button type="button" class="btn" id="les-stage-prev">Артқа</button>
+        <button type="button" class="btn btn--primary" id="les-stage-next">Әрі қарай</button>
+      </div>
+    </div>
+  </div>
+  <ol class="les-rail" id="les-rail" aria-label="Құрастыру кезеңдері, қолданбадағы бөліктер бойынша"></ol>
+  <div class="les-build__how">
+    <p><b>Жұппен жұмыс істейміз.</b> А оқушысы 1-қармауышты құрастырады. Б оқушысы басқару құрылғысы мен 2-қармауышты құрастырады.</p>
+    <p class="les-ports"><span>Қармауыштың моторы <b>A</b></span><span>Күш датчигі <b>E</b></span></p>
+  </div>
+  <div class="les-build__take">
+    <label class="les-range">Бөлшектеу<input type="range" id="les-explode" min="0" max="100" value="0"></label>
+    <p>Сабақтың соңында модельдерді бөлшектеңдер де, бөлшектерді ұяшықтарға сұрыптап салыңдар: штифт — штифтке, арқалық — арқалыққа. Күш датчигінің кабелі датчиктен ажыратылмайды: оны тартпаңдар.</p>
+  </div>
+</section>
+
+<section class="les-sec les-auto" id="les-auto" aria-labelledby="les-auto-title">
+  <div class="les-auto__head">
+    <h2 id="les-auto-title">Қашан қысу керегін кім шешеді?</h2>
+    <p>Манипулятор — роботтың қолы. Автономия дегеніміз — машинаның не істеу керегін өзі шешуі. Сондықтан тақырып «Манипуляторлар және автономия» деп аталады.</p>
+  </div>
+  <ol class="les-ladder">
+    <li>
+      <div class="les-ladder__here">
+        <svg viewBox="0 0 360 200" aria-hidden="true"><use href="#les-pic-tool"/></svg>
+        <p><b>«Қармауыштар» моделі қазір осында.</b> Қашан қысу керегін сен шешесің. Бағдарлама басуды мотордың қозғалысына айналдырады.</p>
+      </div>
+      <h3>Қолмен басқару</h3>
+      <p class="les-ladder__who">Адам шешеді</p>
+      <p>Әр команданы адам береді. Онсыз машина қозғалмайды.</p>
+    </li>
+    <li>
+      <h3>Бағдарлама</h3>
+      <p class="les-ladder__who">Бағдарлама шешеді, оны адам жазған</p>
+      <p>Қадамдар алдын ала жазылған, машина оларды өзі қайталайды.</p>
+      <p class="les-ladder__next">Біздің қармауыштарымызда мотордың қалай қозғалып, қай жерде тоқтайтынын бағдарлама қазірдің өзінде шешеді.</p>
+    </li>
+    <li>
+      <h3>Автономия</h3>
+      <p class="les-ladder__who">Машина шешеді</p>
+      <p>Машина датчиктерімен өзі сезеді және не істейтінін өзі таңдайды.</p>
+      <p class="les-ladder__next">Келесі қадам: датчик қысқаштың өзінде. Қармауыш затты өзі сезіп, оны өзі қысады.</p>
+    </li>
+  </ol>
+</section>
+
+<section class="les-sec les-quiz" id="les-quiz" aria-labelledby="les-quiz-title">
+  <div class="les-quiz__head">
+    <h2 id="les-quiz-title">Шағын тест</h2>
+    <p class="les-quiz__pins" id="les-quiz-pins" role="img"></p>
+    <p class="les-quiz__last" id="les-quiz-last"></p>
+  </div>
+  <div class="les-quiz__box" id="les-quiz-box"></div>
+</section>
+
+<footer class="les-foot">
+  <a class="btn btn--primary les-foot__next" href="#examples">Әрі қарай: өмірде</a>
+  <p>LEGO және SPIKE — LEGO Group компаниясының тауар белгілері. Бұл — мұғалімнің оқу материалы, ол LEGO Group-пен байланысты емес және LEGO Group тарапынан мақұлданбаған.</p>
+</footer>
+
+</div>
